@@ -22,6 +22,8 @@ gem 'era_835_parser'
 ```ruby
 era = Era835Parser::Parser.new(file_path: '/Desktop/era.txt').parse
 
+puts era[:addressed_to] # The person/name the ERA is addressed to
+
 # The output is grouped by check number with each claim grouped under its respective check
 era[:checks].each do |check_number, check|
   puts check[:check_number] # Check number

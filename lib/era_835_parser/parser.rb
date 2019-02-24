@@ -37,6 +37,10 @@ module Era835Parser
 
       open(file_path).readlines.each do |line|
 
+        if line.include?("Dear:")
+          era[:addressed_to] = line.gsub("Dear:", "").strip
+        end
+
         if line !~ /={10,}/i && adjustments_start == true
           adjustment = Hash.new
           adjustment[:adjustment_date] = /\d+\/\d+\/\d+/.match(line)[0].strip if !/\d+\/\d+\/\d+/.match(line).nil?
