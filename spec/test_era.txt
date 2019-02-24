@@ -1,0 +1,95 @@
+Dear: Jane Doe
+
+
+Your Claims have been adjudicated by the Payer. Electronic Payment / Advise information has been received by Comapny and summarized as follows.
+
+==================================================
+------- HEALTH CARE CLAIM PAYMENT/ADVICE -------
+==================================================
+
+
+========================================================================================================================================================
+Adjustment Date  Provider ID  Reference ID                                       Adjustment Amt  Reason
+========================================================================================================================================================
+12/30/2018       1111111111   BBBBBBVP31M0                                       -42.81          Overpayment Recover
+12/31/2018       1111111112   BBBBBBVP31M1                                       -33.44          Overpayment Recover
+12/30/2018       1111111113   BBBBBBVP31M2                                       33.45           Overpayment Recover
+========================================================================================================================================================
+
+========================================================================================================================================================
+Check#                         Amount          # Claims       NPI or Tax ID           Payee                         Date
+========================================================================================================================================================
+201812215555555555             48.80           1              1212121212              ABC COMPANY LLC               12/21/2018
+201812215555555556             51.20           2              1212121213              ABC COMPANY                   12/22/2018
+201812215555555557             5.00            2              1212121212              ABC COMPANY LLC               12/21/2018
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555555             M11111110          DOE JR,DAVIS        65.00       48.80        1112          PROCESSED AS PRIMARY           ABC HEALTHCARE EAST
+                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SOMEWHERE,GA 11111
+                                                                                                                                            Tax ID: 11-1111110
+                                                                                                Payer Claim Control Number: 111111111000
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/25/2018 92507  65.00        48.80        16.20          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                CONTRACTUAL OBLIGATIONS     16.20   CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555556             ZECM11111111       DOE,JANE            -65.00      -48.80       L111          OTHER                          ABC HEALTHCARE WEST
+                                                                                                                                            50 EAST RD
+                                                                                                                                            ANYWHERE,TN 00002-1111
+                                                                                                                                            Tax ID: 11-1111111
+                                                                                                Payer Claim Control Number: BTBBB1111100
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/27/2017 92507  -65.00       -48.80       -16.20         NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                OTHER ADJUSTMENTS           -16.20  CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      11/09/2017 92507  -5.00        0.00         -5.00          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                OTHER ADJUSTMENTS           -5.00   PAYMENT ADJUSTED BECAUSE CHARGES HAVE BEEN PAID BY ANOTHER PAYER.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555556             ZECM11111112       SMITH,JOSEPH        100.00      100.00       M111          PROCESSED AS SECONDARY         ABC HEALTHCARE WEST
+                                                                                                                                            50 EAST RD
+                                                                                                                                            ANYWHERE,TN 00002
+                                                                                                                                            Tax ID: 11-1111111
+                                                                                                Payer Claim Control Number: BT1111111141
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/25/2017 92507  100.00       100.00       0.00           NO REMARKS
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555557             ZECM11111112       LASTNAME,FIRST      45.00       0.00         M111          DENIED                         ABC HEALTHCARE EAST
+                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SOMEWHERE,GA 11111
+                                                                                                                                            Tax ID: 11-1111110
+                                                                                                Payer Claim Control Number: BT1111111131
+                                                                                                Claim Statement Period:     01/30/2019 - 01/30/2019
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/28/2017 92507  45.00        0.00         45.00          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                CONTRACTUAL OBLIGATIONS     45.00   CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555557             ZECM11111112       WORLD,HELLO         65.00       5.00         M111          PROCESSED AS PRIMARY, FWDED    ABC HEALTHCARE EAST
+                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SOMEWHERE,GA 11111
+                                                                                                                                            Tax ID: 11-1111110
+                                                                                                Payer Claim Control Number: BT1111111121
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/30/2017 92507  65.00        5.00         60.00          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                CONTRACTUAL OBLIGATIONS     16.20   CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+                                OTHER ADJUSTMENTS           43.80   PAYMENT ADJUSTED BECAUSE CHARGES HAVE BEEN PAID BY ANOTHER PAYER.
