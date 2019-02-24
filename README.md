@@ -1,6 +1,6 @@
 # Electronic Remittance Advice (ERA) 835 parser
 
-[![Gem Version](https://badge.fury.io/rb/era_835_parser.svg)](http://badge.fury.io/rb/era_835_parser) [![Code Climate](https://codeclimate.com/github/diasks2/era_835_parser/badges/gpa.svg)](https://codeclimate.com/github/diasks2/era_835_parser) [![Build Status](https://travis-ci.org/diasks2/era_835_parser.png)](https://travis-ci.org/diasks2/era_835_parser) [![Test Coverage](https://codeclimate.com/github/diasks2/era_835_parser/badges/coverage.svg)](https://codeclimate.com/github/diasks2/era_835_parser) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/diasks2/era_835_parser/blob/master/LICENSE.txt)
+[![Gem Version](https://badge.fury.io/rb/era_835_parser.svg)](http://badge.fury.io/rb/era_835_parser) [![Build Status](https://travis-ci.org/diasks2/era_835_parser.png)](https://travis-ci.org/diasks2/era_835_parser) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/diasks2/era_835_parser/blob/master/LICENSE.txt)
 
 This is a gem to parse ERAs, the electronic equivalent of a paper Explanation of Benefits (EOB). An electronic remittance advice (ERA) is an electronic data interchange (EDI) version of a medical insurance payment explanation. It provides details about providers' claims payment, and if the claims are denied, it would then contain the required explanations.
 
