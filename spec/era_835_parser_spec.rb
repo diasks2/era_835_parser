@@ -458,7 +458,7 @@ Check#                         Patient ID         Last,First          Charge Amt
           text = <<-EOF
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
-201812215555555557             ZECM11111112       LASTNAME,FIRST      45.00       0.00         M111          DENIED                         ABC HEALTHCARE EAST
+201812215555555557             ZECM11111112       LASTNAME,           45.00       0.00         M111          DENIED                         ABC HEALTHCARE EAST
                                                                                                                                             ONE CIRCLE RD
                                                                                                                                             SOMEWHERE,GA 11111
                                                                                                                                             Tax ID: 11-1111110
@@ -477,13 +477,13 @@ Check#                         Patient ID         Last,First          Charge Amt
           expect(@era[:checks]['201812215555555557'][:eras][0][:patient_id]).to eq('ZECM11111112')
         end
         it 'returns the Patient name' do
-          expect(@era[:checks]['201812215555555557'][:eras][0][:patient_name]).to eq('LASTNAME,FIRST')
+          expect(@era[:checks]['201812215555555557'][:eras][0][:patient_name]).to eq('LASTNAME,')
         end
         it 'returns the Patient last name (titlized)' do
           expect(@era[:checks]['201812215555555557'][:eras][0][:patient_last_name]).to eq('Lastname')
         end
         it 'returns the Patient first name (titlized)' do
-          expect(@era[:checks]['201812215555555557'][:eras][0][:patient_first_name]).to eq('First')
+          expect(@era[:checks]['201812215555555557'][:eras][0][:patient_first_name]).to eq(nil)
         end
         it 'returns the Total charge amount (integer)' do
           expect(@era[:checks]['201812215555555557'][:eras][0][:charge_amount]).to eq(4500)

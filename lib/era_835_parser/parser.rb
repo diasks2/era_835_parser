@@ -159,8 +159,8 @@ module Era835Parser
           next_line_check_number = false
           individual_era[:patient_id] = /^[^\s]+(?=\s)\s+[^\s]+/.match(line)[0].strip.split(" ")[1] if !/^[^\s]+(?=\s)\s+[^\s]+/.match(line).nil?
           individual_era[:patient_name] = /\s\D*,\D*\s/.match(line)[0].strip if !/\s\D*,\D*\s/.match(line).nil?
-          individual_era[:patient_last_name] = individual_era[:patient_name].split(",")[0].downcase.split(" ").map { |word| word.capitalize }.join(" ")
-          individual_era[:patient_first_name] = individual_era[:patient_name].split(",")[1].downcase.split(" ").map { |word| word.capitalize }.join(" ")
+          individual_era[:patient_last_name] = individual_era[:patient_name].split(",")[0].downcase.split(" ").map { |word| word.capitalize }.join(" ") if !individual_era[:patient_name].split(",")[0].nil?
+          individual_era[:patient_first_name] = individual_era[:patient_name].split(",")[1].downcase.split(" ").map { |word| word.capitalize }.join(" ") if !individual_era[:patient_name].split(",")[1].nil?
           individual_era[:charge_amount] = (/,\D+\d+\.\d+\s/.match(line)[0].gsub(/[a-zA-Z,]/, "").strip.to_f * 100).to_i if !/,\D+\d+\.\d+\s/.match(line).nil?
           individual_era[:payment_amount] = (/\.\d+\s+\-?\d+\.\d+\s/.match(line)[0].strip.split(" ")[1].strip.to_f * 100).to_i if !/\.\d+\s+\-?\d+\.\d+\s/.match(line).nil?
           individual_era[:account_number] = /\.\d+\s+\-?\d+\.\d+\s+[A-Z\d]+\s/.match(line)[0].strip.split(" ")[2] if !/\.\d+\s+\-?\d+\.\d+\s+[A-Z\d]+\s/.match(line).nil?

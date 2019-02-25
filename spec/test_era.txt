@@ -68,7 +68,7 @@ Check#                         Patient ID         Last,First          Charge Amt
                       10/25/2017 92507  100.00       100.00       0.00           NO REMARKS
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
-201812215555555557             ZECM11111112       LASTNAME,FIRST      45.00       0.00         M111          DENIED                         ABC HEALTHCARE EAST
+201812215555555557             ZECM11111112       LASTNAME,           45.00       0.00         M111          DENIED                         ABC HEALTHCARE EAST
                                                                                                                                             ONE CIRCLE RD
                                                                                                                                             SOMEWHERE,GA 11111
                                                                                                                                             Tax ID: 11-1111110
