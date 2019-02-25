@@ -32,26 +32,26 @@ era[:checks].each do |check_number, check|
   puts check[:npi_tax_id] # NPI or Tax ID of payee
   puts check[:payee] # Check payee
   puts check[:date] # Check date (string mm/dd/yyyy)
-  check[:eras].each do |era_counter, era|
-    puts era[:era_text] # ERA text
-    puts era[:patient_id] # Patient ID
-    puts era[:patient_name] # Patient name
-    puts era[:patient_last_name] # Patient last name (titlized)
-    puts era[:patient_first_name] # Patient first name (titlized)
-    puts era[:charge_amount] # Total charge amount (integer)
-    puts era[:payment_amount] # Total payment amount (integer)
-    puts era[:account_number] # Account number
-    puts era[:status] # Status
-    puts era[:payer_name] # Payer name
-    puts era[:payer_address] # Payer address
-    puts era[:payer_city] # Payer city
-    puts era[:payer_state] # Payer state
-    puts era[:payer_zip_code] # Payer zip code
-    puts era[:payer_tax_id] # Payer tax id
-    puts era[:payer_claim_control_number] # Payer claim control number
-    puts era[:claim_statement_period_start] # Claim statement period start
-    puts era[:claim_statement_period_end] # Claim statement period end
-    era[:line_items].each do |line_item_counter, line_item|
+  check[:eras].each do |era_counter, individual_era|
+    puts individual_era[:era_text] # ERA text
+    puts individual_era[:patient_id] # Patient ID
+    puts individual_era[:patient_name] # Patient name
+    puts individual_era[:patient_last_name] # Patient last name (titlized)
+    puts individual_era[:patient_first_name] # Patient first name (titlized)
+    puts individual_era[:charge_amount] # Total charge amount (integer)
+    puts individual_era[:payment_amount] # Total payment amount (integer)
+    puts individual_era[:account_number] # Account number
+    puts individual_era[:status] # Status
+    puts individual_era[:payer_name] # Payer name
+    puts individual_era[:payer_address] # Payer address
+    puts individual_era[:payer_city] # Payer city
+    puts individual_era[:payer_state] # Payer state
+    puts individual_era[:payer_zip_code] # Payer zip code
+    puts individual_era[:payer_tax_id] # Payer tax id
+    puts individual_era[:payer_claim_control_number] # Payer claim control number
+    puts individual_era[:claim_statement_period_start] # Claim statement period start
+    puts individual_era[:claim_statement_period_end] # Claim statement period end
+    individual_era[:line_items].each do |line_item_counter, line_item|
       puts line_item[:service_date] # Date of service (string mm/dd/yyyy)
       puts line_item[:cpt_code] # CPT code
       puts line_item[:charge_amount] # Charge amount (integer)
