@@ -75,6 +75,24 @@ RSpec.describe Era835Parser::Parser do
       end
 
       context 'ERA #0' do
+        it 'returns the ERA text' do
+          text = <<-EOF
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555555             M11111110          DOE JR,DAVIS        65.00       48.80        1112          PROCESSED AS PRIMARY           ABC HEALTHCARE EAST
+                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SOMEWHERE,GA 11111
+                                                                                                                                            Tax ID: 11-1111110
+                                                                                                Payer Claim Control Number: 111111111000
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/25/2018 92507  65.00        48.80        16.20          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                CONTRACTUAL OBLIGATIONS     16.20   CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+          EOF
+          expect(@era[:checks]['201812215555555555'][:eras][0][:era_text]).to eq(text.strip)
+        end
         it 'returns the Patient ID' do
           expect(@era[:checks]['201812215555555555'][:eras][0][:patient_id]).to eq('M11111110')
         end
@@ -182,6 +200,30 @@ RSpec.describe Era835Parser::Parser do
       end
 
       context 'ERA #0' do
+        it 'returns the ERA text' do
+          text = <<-EOF
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555556             ZECM11111111       DOE,JANE            -65.00      -48.80       L111          OTHER                          ABC HEALTHCARE WEST
+                                                                                                                                            50 EAST RD
+                                                                                                                                            ANYWHERE,TN 00002-1111
+                                                                                                                                            Tax ID: 11-1111111
+                                                                                                Payer Claim Control Number: BTBBB1111100
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/27/2017 92507  -65.00       -48.80       -16.20         NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                OTHER ADJUSTMENTS           -16.20  CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      11/09/2017 92507  -5.00        0.00         -5.00          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                OTHER ADJUSTMENTS           -5.00   PAYMENT ADJUSTED BECAUSE CHARGES HAVE BEEN PAID BY ANOTHER PAYER.
+          EOF
+          expect(@era[:checks]['201812215555555556'][:eras][0][:era_text]).to eq(text.strip)
+        end
         it 'returns the Patient ID' do
           expect(@era[:checks]['201812215555555556'][:eras][0][:patient_id]).to eq('ZECM11111111')
         end
@@ -300,6 +342,21 @@ RSpec.describe Era835Parser::Parser do
       end
 
       context 'ERA #1' do
+        it 'returns the ERA text' do
+          text = <<-EOF
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555556             ZECM11111112       SMITH,JOSEPH        100.00      100.00       M111          PROCESSED AS SECONDARY         ABC HEALTHCARE WEST
+                                                                                                                                            50 EAST RD
+                                                                                                                                            ANYWHERE,TN 00002
+                                                                                                                                            Tax ID: 11-1111111
+                                                                                                Payer Claim Control Number: BT1111111141
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/25/2017 92507  100.00       100.00       0.00           NO REMARKS
+          EOF
+          expect(@era[:checks]['201812215555555556'][:eras][1][:era_text]).to eq(text.strip)
+        end
         it 'returns the Patient ID' do
           expect(@era[:checks]['201812215555555556'][:eras][1][:patient_id]).to eq('ZECM11111112')
         end
@@ -396,6 +453,25 @@ RSpec.describe Era835Parser::Parser do
       end
 
       context 'ERA #0' do
+        it 'returns the ERA text' do
+          text = <<-EOF
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555557             ZECM11111112       LASTNAME,FIRST      45.00       0.00         M111          DENIED                         ABC HEALTHCARE EAST
+                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SOMEWHERE,GA 11111
+                                                                                                                                            Tax ID: 11-1111110
+                                                                                                Payer Claim Control Number: BT1111111131
+                                                                                                Claim Statement Period:     01/30/2019 - 01/30/2019
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/28/2017 92507  45.00        0.00         45.00          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                CONTRACTUAL OBLIGATIONS     45.00   CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+          EOF
+          expect(@era[:checks]['201812215555555557'][:eras][0][:era_text]).to eq(text.strip)
+        end
         it 'returns the Patient ID' do
           expect(@era[:checks]['201812215555555557'][:eras][0][:patient_id]).to eq('ZECM11111112')
         end
@@ -482,6 +558,25 @@ RSpec.describe Era835Parser::Parser do
       end
 
       context 'ERA #1' do
+        it 'returns the ERA text' do
+          text = <<-EOF
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
+201812215555555557             ZECM11111112       WORLD,HELLO         65.00       5.00         M111          PROCESSED AS PRIMARY, FWDED    ABC HEALTHCARE EAST
+                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SOMEWHERE,GA 11111
+                                                                                                                                            Tax ID: 11-1111110
+                                                                                                Payer Claim Control Number: BT1111111121
+
+          Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks
+                      10/30/2017 92507  65.00        5.00         60.00          NO REMARKS
+
+                                Adjustment Group            Adj Amt Translated Reason Code
+                                CONTRACTUAL OBLIGATIONS     16.20   CHARGES EXCEED YOUR CONTRACTED/LEGISLATED FEE ARRANGEMENT.
+                                OTHER ADJUSTMENTS           43.80   PAYMENT ADJUSTED BECAUSE CHARGES HAVE BEEN PAID BY ANOTHER PAYER.
+          EOF
+          expect(@era[:checks]['201812215555555557'][:eras][1][:era_text]).to eq(text.strip)
+        end
         it 'returns the Patient ID' do
           expect(@era[:checks]['201812215555555557'][:eras][1][:patient_id]).to eq('ZECM11111112')
         end

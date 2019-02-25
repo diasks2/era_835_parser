@@ -18,6 +18,7 @@ module Era835Parser
       individual_era = Hash.new
       individual_line_item = Hash.new
       check_number = ''
+      era_text = "--------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 
       # counters
       adjustment_counter = 0
@@ -36,6 +37,7 @@ module Era835Parser
       next_line_adjustment_group = false
 
       open(file_path).readlines.each do |line|
+        era_text += line if eras_start && line !~ /-{10,}/i
 
         if line.include?("Dear:")
           era[:addressed_to] = line.gsub("Dear:", "").strip
@@ -189,15 +191,18 @@ module Era835Parser
               era_counter = 0
               eras = Hash.new
               individual_era[:line_items] = line_items
+              individual_era[:era_text] = era_text.strip.gsub(/\r/, "")
               eras[era_counter] = individual_era
               era[:checks][check_number][:eras] = eras
             else
               era_counter = era[:checks][check_number][:eras].count
               eras = Hash.new
               individual_era[:line_items] = line_items
+              individual_era[:era_text] = era_text.strip.gsub(/\r/, "")
               eras[era_counter] = individual_era
               era[:checks][check_number][:eras] = era[:checks][check_number][:eras].merge(eras)
             end
+            era_text = "--------------------------------------------------------------------------------------------------------------------------------------------------------\n"
           end
         end
 
@@ -225,16 +230,17 @@ module Era835Parser
         era_counter = 0
         eras = Hash.new
         individual_era[:line_items] = line_items
+        individual_era[:era_text] = era_text.strip.gsub(/\r/, "")
         eras[era_counter] = individual_era
         era[:checks][check_number][:eras] = eras
       else
         era_counter = era[:checks][check_number][:eras].count
         eras = Hash.new
         individual_era[:line_items] = line_items
+        individual_era[:era_text] = era_text.strip.gsub(/\r/, "")
         eras[era_counter] = individual_era
         era[:checks][check_number][:eras] = era[:checks][check_number][:eras].merge(eras)
       end
-
       return era
     end
   end

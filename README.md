@@ -33,6 +33,7 @@ era[:checks].each do |check_number, check|
   puts check[:payee] # Check payee
   puts check[:date] # Check date (string mm/dd/yyyy)
   check[:eras].each do |era_counter, era|
+    puts era[:era_text] # ERA text
     puts era[:patient_id] # Patient ID
     puts era[:patient_name] # Patient name
     puts era[:patient_last_name] # Patient last name (titlized)
