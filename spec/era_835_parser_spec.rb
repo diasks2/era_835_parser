@@ -80,7 +80,8 @@ RSpec.describe Era835Parser::Parser do
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
 201812215555555555             M11111110          DOE JR,DAVIS        65.00       48.80        1112          PROCESSED AS PRIMARY           ABC HEALTHCARE EAST
-                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SERVICE CENTER
+                                                                                                                                            PO BOX 12234
                                                                                                                                             SOMEWHERE,GA 11111
                                                                                                                                             Tax ID: 11-1111110
                                                                                                 Payer Claim Control Number: 111111111000
@@ -121,7 +122,7 @@ Check#                         Patient ID         Last,First          Charge Amt
           expect(@era[:checks]['201812215555555555'][:eras][0][:payer_name]).to eq('ABC HEALTHCARE EAST')
         end
         it 'returns the Payer address' do
-          expect(@era[:checks]['201812215555555555'][:eras][0][:payer_address]).to eq('ONE CIRCLE RD')
+          expect(@era[:checks]['201812215555555555'][:eras][0][:payer_address]).to eq('SERVICE CENTER PO BOX 12234')
         end
         it 'returns the Payer city' do
           expect(@era[:checks]['201812215555555555'][:eras][0][:payer_city]).to eq('SOMEWHERE')

@@ -26,7 +26,8 @@ Check#                         Amount          # Claims       NPI or Tax ID     
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
 201812215555555555             M11111110          DOE JR,DAVIS        65.00       48.80        1112          PROCESSED AS PRIMARY           ABC HEALTHCARE EAST
-                                                                                                                                            ONE CIRCLE RD
+                                                                                                                                            SERVICE CENTER
+                                                                                                                                            PO BOX 12234
                                                                                                                                             SOMEWHERE,GA 11111
                                                                                                                                             Tax ID: 11-1111110
                                                                                                 Payer Claim Control Number: 111111111000

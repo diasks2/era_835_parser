@@ -137,11 +137,15 @@ module Era835Parser
         end
 
         if next_line_city
-          individual_era[:payer_city] = line.strip.split(",")[0].strip
-          individual_era[:payer_state] = line.strip.split(",")[1].split(" ")[0].strip
-          individual_era[:payer_zip_code] = line.strip.split(",")[1].split(" ")[1].strip
-          next_line_city = false
-          next_line_tax_id = true
+          if line.include?(",")
+            individual_era[:payer_city] = line.strip.split(",")[0].strip
+            individual_era[:payer_state] = line.strip.split(",")[1].split(" ")[0].strip
+            individual_era[:payer_zip_code] = line.strip.split(",")[1].split(" ")[1].strip
+            next_line_city = false
+            next_line_tax_id = true
+          else
+            individual_era[:payer_address] = individual_era[:payer_address] + " " + line.strip
+          end
         end
 
         if next_line_address
