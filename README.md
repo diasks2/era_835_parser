@@ -68,7 +68,7 @@ era[:checks].each do |check_number, check|
 end
 
 # View any adjustments
-era[:adjustments].each do |adjustment|
+era[:adjustments].each do |adjustment_counter, adjustment|
   puts adjustment[:adjustment_date] # Adjustment date (string mm/dd/yyyy)
   puts adjustment[:provider_id] # Provider ID
   puts adjustment[:reference_id] # Reference ID
