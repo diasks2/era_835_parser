@@ -701,7 +701,7 @@ Check#                         Patient ID         Last,First          Charge Amt
           expect(@era[:adjustments][1][:provider_id]).to eq('1111111112')
         end
         it 'returns Reference ID' do
-          expect(@era[:adjustments][1][:reference_id]).to eq('BBBBBBVP31M1')
+          expect(@era[:adjustments][1][:reference_id]).to eq('20170514 1710101112 06')
         end
         it 'returns Adjustment amount (integer)' do
           expect(@era[:adjustments][1][:adjustment_amount]).to eq(-3344)

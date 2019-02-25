@@ -47,9 +47,9 @@ module Era835Parser
           adjustment = Hash.new
           adjustment[:adjustment_date] = /\d+\/\d+\/\d+/.match(line)[0].strip if !/\d+\/\d+\/\d+/.match(line).nil?
           adjustment[:provider_id] = /\d+\/\d+\/\d+\s+\d+\s+[^\s]+/.match(line)[0].split(" ")[1].strip if !/\d+\/\d+\/\d+\s+\d+\s+[^\s]+/.match(line).nil?
-          adjustment[:reference_id] = /\d+\/\d+\/\d+\s+\d+\s+[^\s]+/.match(line)[0].split(" ")[2].strip if !/\d+\/\d+\/\d+\s+\d+\s+[^\s]+/.match(line).nil?
-          adjustment[:adjustment_amount] = (/\d+\/\d+\/\d+\s+\d+\s+[^\s]+\s+[\-\d\.]+/.match(line)[0].split(" ")[3].strip.to_f * 100).to_i if !/\d+\/\d+\/\d+\s+\d+\s+[^\s]+\s+[\-\d\.]+/.match(line).nil?
-          adjustment[:reason] = line.gsub(/\d+\/\d+\/\d+\s+\d+\s+[^\s]+\s+[\-\d\.]+/, "").strip
+          adjustment[:reference_id] = /\d+\/\d+\/\d+\s+[^\.]+/.match(line)[0].split(" ").each_with_index.map { |x,i| (/\d+\/\d+\/\d+\s+[^\.]+/.match(line)[0].split(" ").count - 1) > i && i > 1 ? x.strip : '' }.join(" ").strip if !/\d+\/\d+\/\d+\s+[^\.]+/.match(line).nil?
+          adjustment[:adjustment_amount] = (/\d+\/\d+\/\d+\s+[^\.]+\.\d+/.match(line)[0].split(" ")[-1].strip.to_f * 100).to_i if !/\d+\/\d+\/\d+\s+[^\.]+\.\d+/.match(line).nil?
+          adjustment[:reason] = line.gsub(/\d+\/\d+\/\d+\s+[^\.]+\.\d+/, "").strip
           adjustments[adjustment_counter] = adjustment
           adjustment_counter += 1
         end
