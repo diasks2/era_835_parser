@@ -951,8 +951,8 @@ module Era835Parser
         era[:checks].each do |i, check|
           era[:checks][check[:check_number]][:number_of_claims] = check[:eras].size
           if !check[:eras].nil?
-            line_items = ''
             check[:eras].each do |era_counter, individual_era|
+              line_items = ''
               if !individual_era[:line_items].nil?
                 individual_era[:line_items].each do |line_item_counter, line_item|
                   line_items += "#{" " * (22)}#{line_item[:service_date]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{truncate(line_item[:remarks], 82)}\n\n"
