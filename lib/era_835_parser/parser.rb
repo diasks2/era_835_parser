@@ -949,7 +949,11 @@ module Era835Parser
         end
         era[:adjustments] = adjustments if adjustments != {}
         era[:checks].each do |i, check|
-          era[:checks][check[:check_number]][:number_of_claims] = check[:eras].size
+          if check[:eras].nil?
+            era[:checks][check[:check_number]][:number_of_claims] = 0
+          else
+            era[:checks][check[:check_number]][:number_of_claims] = check[:eras].size
+          end
           if !check[:eras].nil?
             check[:eras].each do |era_counter, individual_era|
               line_items = ''
