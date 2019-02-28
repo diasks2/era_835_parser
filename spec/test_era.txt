@@ -1,7 +1,7 @@
 Dear: Jane Doe
 
 
-Your Claims have been adjudicated by the Payer. Electronic Payment / Advise information has been received by Comapny and summarized as follows.
+Your Claims have been adjudicated by the Payer. Electronic Payment / Advise information has been received by Company and summarized as follows.
 
 ==================================================
 ------- HEALTH CARE CLAIM PAYMENT/ADVICE -------
@@ -60,7 +60,7 @@ Check#                         Patient ID         Last,First          Charge Amt
 Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt#        Status                         Payer
 201812215555555556             ZECM11111112       SMITH,JOSEPH        100.00      100.00       M111          PROCESSED AS SECONDARY         ABC HEALTHCARE WEST
                                                                                                                                             50 EAST RD
-                                                                                                                                            ANYWHERE,TN 00002
+                                                                                                                                            ANYWHERE,TN 00002-1111
                                                                                                                                             Tax ID: 11-1111111
                                                                                                 Payer Claim Control Number: BT1111111141
 
