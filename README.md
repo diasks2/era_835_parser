@@ -49,7 +49,7 @@ if !era[:checks].nil?
         puts individual_era[:charge_amount] # Total charge amount (integer)
         puts individual_era[:payment_amount] # Total payment amount (integer)
         puts individual_era[:account_number] # Account number
-        puts individual_era[:claim_status_code] # Cliam status code
+        puts individual_era[:claim_status_code] # Claim status code
         puts individual_era[:status] # Claim status code description
         puts individual_era[:payer_claim_control_number] # Payer claim control number
         puts individual_era[:claim_statement_period_start] # Claim statement period start

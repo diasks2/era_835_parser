@@ -757,7 +757,7 @@ module Era835Parser
                   # Provider Adjustment Amount
                   adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
                 end
-                adjustments[adjustment_counter_a] = adjustment if adjustment_counter_a > -1
+                adjustments[adjustment_counter_a] = adjustment if adjustment_counter_a > -1 && (adjustment != {} && !adjustment.nil?)
               when "CAS"
                 case index
                 when 1
