@@ -101,10 +101,10 @@ RSpec.describe Era835Parser::Parser do
               expect(@era[:checks]['70408535'][:eras][0][:payer_claim_control_number]).to eq('80209000000')
             end
             it 'returns the Claim statement period start' do
-              expect(@era[:checks]['70408535'][:eras][0][:claim_statement_period_start]).to eq(nil)
+              expect(@era[:checks]['70408535'][:eras][0][:claim_statement_period_start]).to eq("03/07/2010")
             end
             it 'returns the Claim statement period end' do
-              expect(@era[:checks]['70408535'][:eras][0][:claim_statement_period_end]).to eq(nil)
+              expect(@era[:checks]['70408535'][:eras][0][:claim_statement_period_end]).to eq("03/10/2010")
             end
 
             context 'Line item #0' do

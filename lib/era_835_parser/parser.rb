@@ -56,6 +56,10 @@ module Era835Parser
       service_payment_information_loop = false
       bpr_amount = ''
       bpr_date = ''
+      receive_date = false
+      claim_date_start = false
+      claim_date_end = false
+      service_date = false
 
       open(file_path).readlines.each do |line|
         if line.include?("ISA")
@@ -496,12 +500,27 @@ module Era835Parser
                 when 1
                   # Date Time Qualifier
                   # puts "Date Time Qualifier: #{element}"
+                  if element == "050"
+                    receive_date = true
+                  elsif element == "232"
+                    claim_date_start = true
+                  elsif element == "233"
+                    claim_date_end = true
+                  elsif element == "472"
+                    service_date = true
+                  end
                 when 2
                   # Service Date
                   # puts "Service Date: #{element}"
-                  if service_payment_information_loop
+                  if service_date
                     individual_line_item[:service_date] = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
-                    service_payment_information_loop = false
+                    receive_date = false
+                  elsif claim_date_start
+                    individual_era[:claim_statement_period_start] = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
+                    claim_date_start = false
+                  elsif claim_date_end
+                    individual_era[:claim_statement_period_end] = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
+                    claim_date_end = false
                   end
                 end
               when "N4"
@@ -572,6 +591,7 @@ module Era835Parser
               when "CLP"
                 svc_counter = 0
                 claim_payment_information_loop = true
+                service_payment_information_loop = true if individual_line_item[:service_date].nil?
                 case index
                 when 1
                   if individual_line_item != {}
@@ -581,6 +601,7 @@ module Era835Parser
                       line_items[line_items.count] = individual_line_item
                     end
                     individual_era[:line_items] = line_items
+                    individual_line_item = Hash.new
                   end
                   individual_era = Hash.new
                   line_items = Hash.new
@@ -786,9 +807,6 @@ module Era835Parser
                   individual_line_item[:adjustment_groups].each do |k,v|
                     adjustment_amount_tally += v[:adjustment_amount]
                   end
-                  # puts "^^^^^^^^^"
-                  # puts individual_line_item[:adjustment_groups]
-                  # puts "^^^^^^^^^"
                   individual_line_item[:total_adjustment_amount] = adjustment_amount_tally
                 when 4
                   # QUANTITY
@@ -871,10 +889,10 @@ module Era835Parser
                       line_items[line_items.count] = individual_line_item
                     end
                     individual_era[:line_items] = line_items
+                    individual_line_item = Hash.new
                   end
-                  individual_line_item = Hash.new
                   adjustment_groups = Hash.new
-                  service_payment_information_loop = true
+                  service_payment_information_loop = true if individual_line_item[:service_date].nil?
                   element.split(":").each_with_index do |subelement, i|
                     case i
                     when 0
