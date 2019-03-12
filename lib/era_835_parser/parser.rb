@@ -60,6 +60,7 @@ module Era835Parser
       claim_date_start = false
       claim_date_end = false
       service_date = false
+      floating_adjustment_group_code = nil
 
       open(file_path).readlines.each do |line|
         if line.include?("ISA")
@@ -131,8 +132,14 @@ module Era835Parser
             individual_line_item[:total_adjustment_amount] = (/\d+\/\d+\/\d+\s\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+/.match(line)[0].strip.split(" ")[4].to_f * 100).round().to_i if !/\d+\/\d+\/\d+\s\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+/.match(line).nil?
             individual_line_item[:remarks] = line.gsub(/\d+\/\d+\/\d+\s\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+/, "").strip if !/\d+\/\d+\/\d+\s\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+\s+\-?\d+\.\d+/.match(line).nil?
             if line_items.nil?
+              if individual_line_item[:service_date].nil?
+                individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+              end
               line_items[0] = individual_line_item
             else
+              if individual_line_item[:service_date].nil?
+                individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+              end
               line_items[line_items.count] = individual_line_item
             end
             next_line_line_item = false
@@ -502,6 +509,8 @@ module Era835Parser
                   # puts "Date Time Qualifier: #{element}"
                   if element == "050"
                     receive_date = true
+                  elsif element == "150"
+                    service_date = true
                   elsif element == "232"
                     claim_date_start = true
                   elsif element == "233"
@@ -596,8 +605,14 @@ module Era835Parser
                 when 1
                   if individual_line_item != {}
                     if line_items.nil?
+                      if individual_line_item[:service_date].nil?
+                        individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+                      end
                       line_items[0] = individual_line_item
                     else
+                      if individual_line_item[:service_date].nil?
+                        individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+                      end
                       line_items[line_items.count] = individual_line_item
                     end
                     individual_era[:line_items] = line_items
@@ -787,16 +802,23 @@ module Era835Parser
                   individual_adjustment_group_item = Hash.new
                   individual_adjustment_group_item[:adjustment_group_code] = element.strip
                   individual_adjustment_group_item[:adjustment_group] = ADJUSTMENT_GROUP_CODES[element.strip]
-                when 2
+                  floating_adjustment_group_code = element.strip
+                when 2,5,8,11,14,17
                   # Adjustment Reason Code
+                  if index > 2
+                    individual_adjustment_group_item = Hash.new
+                    individual_adjustment_group_item[:adjustment_group_code] = floating_adjustment_group_code
+                    individual_adjustment_group_item[:adjustment_group] = ADJUSTMENT_GROUP_CODES[floating_adjustment_group_code]
+                  end
                   # puts "Adjustment Reason Code: #{element}"
                   individual_adjustment_group_item[:reason_code] = element.strip
                   individual_adjustment_group_item[:translated_reason_code] = ADJUSTMENT_CODES[element.strip]
-                when 3
+                when 3,6,9,12,15,18
                   # Adjustment Amount
                   # puts "Adjustment Amount: #{element}"
                   #
                   individual_adjustment_group_item[:adjustment_amount] = (element.to_f * 100).round().to_i
+                  # puts individual_adjustment_group_item
                   if adjustment_groups.nil?
                     adjustment_groups[0] = individual_adjustment_group_item
                   else
@@ -808,7 +830,7 @@ module Era835Parser
                     adjustment_amount_tally += v[:adjustment_amount]
                   end
                   individual_line_item[:total_adjustment_amount] = adjustment_amount_tally
-                when 4
+                when 4,7,10,13,16,19
                   # QUANTITY
                   # puts "QUANTITY: #{element}"
                 end
@@ -884,8 +906,14 @@ module Era835Parser
                   svc_counter += 1
                   if individual_line_item != {} && svc_counter > 1
                     if line_items.nil?
+                      if individual_line_item[:service_date].nil?
+                        individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+                      end
                       line_items[0] = individual_line_item
                     else
+                      if individual_line_item[:service_date].nil?
+                        individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+                      end
                       line_items[line_items.count] = individual_line_item
                     end
                     individual_era[:line_items] = line_items
@@ -959,8 +987,14 @@ module Era835Parser
       else
         if individual_line_item != {}
           if line_items.nil?
+            if individual_line_item[:service_date].nil?
+              individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+            end
             line_items[0] = individual_line_item
           else
+            if individual_line_item[:service_date].nil?
+              individual_line_item[:service_date] = individual_era[:claim_statement_period_start]
+            end
             line_items[line_items.count] = individual_line_item
           end
           individual_era[:line_items] = line_items
@@ -977,16 +1011,19 @@ module Era835Parser
               line_items = ''
               if !individual_era[:line_items].nil?
                 individual_era[:line_items].each do |line_item_counter, line_item|
-                  if line_item[:service_date].nil?
-                    line_items += "#{" " * (22)}#{individual_era[:claim_statement_period_start]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{truncate(line_item[:remarks], 82)}\n\n"
+                  if line_item[:remarks].nil?
+                    remark = "NO REMARKS"
                   else
-                    line_items += "#{" " * (22)}#{line_item[:service_date]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{truncate(line_item[:remarks], 82)}\n\n"
+                    remark = truncate(line_item[:remarks], 82)
                   end
+                  line_items += "#{" " * (22)}#{line_item[:service_date]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{remark}\n\n"
+
                   if !line_item[:adjustment_groups].nil?
                     line_item[:adjustment_groups].each do |adjustment_group_counter, adjustment_group|
-                      line_items += "                                Adjustment Group            Adj Amt Translated Reason Code\n"
+                      line_items += "                                Adjustment Group            Adj Amt Translated Reason Code\n" if adjustment_group_counter == 0
                       reason_code = adjustment_group[:translated_reason_code].nil? ? '' : adjustment_group[:translated_reason_code].upcase
                       line_items += "                                #{adjustment_group[:adjustment_group].upcase}#{" " * (28 - get_length(adjustment_group[:adjustment_group]))}#{'%.2f' % (adjustment_group[:adjustment_amount].to_f / 100)}#{" " * (8 - get_length('%.2f' % (adjustment_group[:adjustment_amount].to_f / 100)))}#{truncate(reason_code, 84)}\n"
+                      line_items += "\n" if line_item[:adjustment_groups].length == (adjustment_group_counter + 1)
                     end
                   end
                 end
@@ -997,7 +1034,13 @@ module Era835Parser
               era_text += "#{" " * (126 + [14, get_length(individual_era[:account_number]) + 1].max)}#{check[:payer_address]}\n"
               era_text += "#{" " * (126 + [14, get_length(individual_era[:account_number]) + 1].max)}#{check[:payer_city]},#{check[:payer_state]} #{check[:payer_zip_code]}\n"
               era_text += "#{" " * (126 + [14, get_length(individual_era[:account_number]) + 1].max)}Tax ID: #{check[:payer_tax_id]}\n"
-              era_text += "#{" " * (96)}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n\n"
+
+              if !individual_era[:claim_statement_period_end].nil? && !individual_era[:claim_statement_period_start].nil?
+                era_text += "#{" " * (96)}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n"
+                era_text += "#{" " * (96)}Claim Statement Period: #{individual_era[:claim_statement_period_start]} - #{individual_era[:claim_statement_period_end]}\n\n"
+              else
+                era_text += "#{" " * (96)}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n\n"
+              end
               if line_items.length > 0
                 era_text += "#{" " * (10)}Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks\n"
                 era_text += line_items

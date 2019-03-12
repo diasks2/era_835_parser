@@ -3,7 +3,6 @@ require 'spec_helper'
 RSpec.describe Era835Parser::Parser do
 
   describe '#parse' do
-
     context 'Machine readable' do
       context 'example_1.835' do
         # https://www.bluecrossnc.com/sites/default/files/document/attachment/providers/public/pdfs/835_5010_v2.6%20Claim%20Payment%20Advice.pdf
@@ -109,7 +108,7 @@ RSpec.describe Era835Parser::Parser do
 
             context 'Line item #0' do
               it 'returns the Date of service (string mm/dd/yyyy)' do
-                expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:service_date]).to eq(nil)
+                expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:service_date]).to eq("03/07/2010")
               end
               it 'returns the CPT code' do
                 expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:cpt_code]).to eq(nil)
