@@ -977,7 +977,11 @@ module Era835Parser
               line_items = ''
               if !individual_era[:line_items].nil?
                 individual_era[:line_items].each do |line_item_counter, line_item|
-                  line_items += "#{" " * (22)}#{line_item[:service_date]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{truncate(line_item[:remarks], 82)}\n\n"
+                  if line_item[:service_date].nil?
+                    line_items += "#{" " * (22)}#{individual_era[:claim_statement_period_start]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{truncate(line_item[:remarks], 82)}\n\n"
+                  else
+                    line_items += "#{" " * (22)}#{line_item[:service_date]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{truncate(line_item[:remarks], 82)}\n\n"
+                  end
                   if !line_item[:adjustment_groups].nil?
                     line_item[:adjustment_groups].each do |adjustment_group_counter, adjustment_group|
                       line_items += "                                Adjustment Group            Adj Amt Translated Reason Code\n"
@@ -996,7 +1000,7 @@ module Era835Parser
               era_text += "#{" " * (96)}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n\n"
               if line_items.length > 0
                 era_text += "#{" " * (10)}Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks\n"
-                 era_text += line_items
+                era_text += line_items
               end
               era[:checks][check[:check_number]][:eras][era_counter][:era_text] = era_text
             end
