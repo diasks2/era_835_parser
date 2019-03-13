@@ -523,7 +523,7 @@ module Era835Parser
                   # puts "Service Date: #{element}"
                   if service_date
                     individual_line_item[:service_date] = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
-                    receive_date = false
+                    service_date = false
                   elsif claim_date_start
                     individual_era[:claim_statement_period_start] = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
                     claim_date_start = false
