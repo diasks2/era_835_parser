@@ -46,6 +46,9 @@ if !era[:checks].nil?
         puts individual_era[:patient_name] # Patient name
         puts individual_era[:patient_last_name] # Patient last name (titlized)
         puts individual_era[:patient_first_name] # Patient first name (titlized)
+        puts individual_era[:rendering_provider_name] # Rendering provider name
+        puts individual_era[:rendering_provider_last_name] # Rendering provider last name (titlized)
+        puts individual_era[:rendering_provider_first_name] # Rendering provider first name (titlized)
         puts individual_era[:charge_amount] # Total charge amount (integer)
         puts individual_era[:payment_amount] # Total payment amount (integer)
         puts individual_era[:account_number] # Account number

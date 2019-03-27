@@ -53,6 +53,7 @@ module Era835Parser
       header_number_loop = false
       claim_payment_information_loop = false
       patient_loop = false
+      rendering_provider_loop = false
       service_payment_information_loop = false
       bpr_amount = ''
       bpr_date = ''
@@ -865,6 +866,11 @@ module Era835Parser
                   else
                     patient_loop = false
                   end
+                  if element == "82"
+                    rendering_provider_loop = true
+                  else
+                    rendering_provider_loop = false
+                  end
                 when 2
                   # Entity Type Qualifier
                   # puts "Entity Type Qualifier: #{element}"
@@ -874,12 +880,19 @@ module Era835Parser
                   if claim_payment_information_loop && patient_loop
                     individual_era[:patient_last_name] = element.strip.downcase.split(" ").map { |word| word.capitalize }.join(" ")
                   end
+                  if claim_payment_information_loop && rendering_provider_loop
+                    individual_era[:rendering_provider_last_name] = element.strip.downcase.split(" ").map { |word| word.capitalize }.join(" ")
+                  end
                 when 4
                   # Patient First Name
                   # puts "Patient First Name: #{element}"
                   if claim_payment_information_loop && patient_loop
                     individual_era[:patient_first_name] = element.strip.downcase.split(" ").map { |word| word.capitalize }.join(" ")
                     individual_era[:patient_name] = individual_era[:patient_last_name].upcase + "," + individual_era[:patient_first_name].upcase
+                  end
+                  if claim_payment_information_loop && rendering_provider_loop
+                    individual_era[:rendering_provider_first_name] = element.strip.downcase.split(" ").map { |word| word.capitalize }.join(" ")
+                    individual_era[:rendering_provider_name] = individual_era[:rendering_provider_last_name].upcase + "," + individual_era[:rendering_provider_first_name].upcase
                   end
                 when 5
                   # Patient Middle Initial
