@@ -1304,5 +1304,177 @@ Check#                         Patient ID         Last,First          Charge Amt
         end
       end
     end
+
+    context 'opened File' do
+      context 'Machine readable' do
+        context 'example_1.835' do
+          before :all do
+            @era = Era835Parser::Parser.new(file: File.open("../era_835_parser/spec/example_1.835")).parse
+          end
+
+          context 'Aggregate totals' do
+            it 'returns the addressed to' do
+              expect(@era[:addressed_to]).to eq(nil)
+            end
+            it 'returns the correct number of checks' do
+              expect(@era[:checks].count).to eq(1)
+            end
+            it 'returns the correct number of adjustments' do
+              expect(@era[:adjustments]).to eq(nil)
+            end
+            it 'returns the correct number of eras' do
+              expect(@era[:checks]['70408535'][:eras].count).to eq(1)
+            end
+            it 'returns the correct number of line items' do
+              expect(@era[:checks]['70408535'][:eras][0][:line_items].count).to eq(1)
+            end
+            it 'returns the correct number of adjustment groups' do
+              expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+            end
+          end
+        end
+      end
+
+      context 'Human readable' do
+        before :all do
+          @era = Era835Parser::Parser.new(file: File.open("../era_835_parser/spec/test_era.txt")).parse
+        end
+
+        context 'Aggregate totals' do
+          it 'returns the addressed to' do
+            expect(@era[:addressed_to]).to eq('Jane Doe')
+          end
+          it 'returns the correct number of checks' do
+            expect(@era[:checks].count).to eq(3)
+          end
+          it 'returns the correct number of adjustments' do
+            expect(@era[:adjustments].count).to eq(3)
+          end
+
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555555'][:eras][0][:line_items].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555556'][:eras][0][:line_items].count).to eq(2)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555556'][:eras][1][:line_items].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555557'][:eras][0][:line_items].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555557'][:eras][1][:line_items].count).to eq(1)
+          end
+
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555555'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555556'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555556'][:eras][0][:line_items][1][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555556'][:eras][1][:line_items][0][:adjustment_groups]).to eq(nil)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555557'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555557'][:eras][1][:line_items][0][:adjustment_groups].count).to eq(2)
+          end
+        end
+      end
+    end
+
+    context 'StringIO' do
+      context 'Machine readable' do
+        context 'example_1.835' do
+          before :all do
+            file_string = File.open("../era_835_parser/spec/example_1.835").read
+            string_io = StringIO.new(file_string)
+            @era = Era835Parser::Parser.new(file: string_io).parse
+          end
+
+          context 'Aggregate totals' do
+            it 'returns the addressed to' do
+              expect(@era[:addressed_to]).to eq(nil)
+            end
+            it 'returns the correct number of checks' do
+              expect(@era[:checks].count).to eq(1)
+            end
+            it 'returns the correct number of adjustments' do
+              expect(@era[:adjustments]).to eq(nil)
+            end
+            it 'returns the correct number of eras' do
+              expect(@era[:checks]['70408535'][:eras].count).to eq(1)
+            end
+            it 'returns the correct number of line items' do
+              expect(@era[:checks]['70408535'][:eras][0][:line_items].count).to eq(1)
+            end
+            it 'returns the correct number of adjustment groups' do
+              expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+            end
+          end
+        end
+      end
+
+      context 'Human readable' do
+        before :all do
+          file_string = File.open("../era_835_parser/spec/test_era.txt").read
+          string_io = StringIO.new(file_string)
+          @era = Era835Parser::Parser.new(file: string_io).parse
+        end
+
+        context 'Aggregate totals' do
+          it 'returns the addressed to' do
+            expect(@era[:addressed_to]).to eq('Jane Doe')
+          end
+          it 'returns the correct number of checks' do
+            expect(@era[:checks].count).to eq(3)
+          end
+          it 'returns the correct number of adjustments' do
+            expect(@era[:adjustments].count).to eq(3)
+          end
+
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555555'][:eras][0][:line_items].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555556'][:eras][0][:line_items].count).to eq(2)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555556'][:eras][1][:line_items].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555557'][:eras][0][:line_items].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['201812215555555557'][:eras][1][:line_items].count).to eq(1)
+          end
+
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555555'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555556'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555556'][:eras][0][:line_items][1][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555556'][:eras][1][:line_items][0][:adjustment_groups]).to eq(nil)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555557'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['201812215555555557'][:eras][1][:line_items][0][:adjustment_groups].count).to eq(2)
+          end
+        end
+      end
+    end
   end
 end
