@@ -96,6 +96,22 @@ end
 
 ```
 
+### Parser options
+`file_path` - A string identifying the location of the local or remote file.
+```ruby
+# String
+era = Era835Parser::Parser.new(file_path: '/Desktop/era.txt').parse
+```
+`file` - An `IO` object to process.
+```ruby
+# File object
+era = Era835Parser::Parser.new(file: File.open('/Desktop/era.txt')).parse
+
+# StringIO
+string_io = StringIO.new('Example 835 text')
+era = Era835Parser::Parser.new(file: string_io).parse
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/diasks2/era_835_parser/fork )
