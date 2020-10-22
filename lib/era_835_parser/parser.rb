@@ -66,6 +66,7 @@ module Era835Parser
       claim_date_end = false
       service_date = false
       floating_adjustment_group_code = nil
+      returned_reference_number = false
 
       file_or_file_path = !file.nil? ? file : file_path
       opened_file = file_or_file_path.respond_to?(:write) ? file_or_file_path : open(file_or_file_path)
@@ -294,7 +295,6 @@ module Era835Parser
             # puts element_type
             # puts subline
             # https://www.healthpartnersplans.com/media/100017241/254_Electronic-Remittance-Advice.pdf
-
             subline.split("*").each_with_index do |element, index|
               case element_type
               when "ST"
@@ -457,15 +457,6 @@ module Era835Parser
                   # Originating Company Supplemental Code
                   # puts "Originating Company Supplemental Code: #{element}"
                 end
-              when "REF"
-                case index
-                when 1
-                  # Receiver Identification Number
-                  # puts "Receiver Identification Number: #{element}"
-                when 2
-                  # Receiver REFERENCE IDENTIFICATION
-                  # puts "Receiver REFERENCE IDENTIFICATION: #{element}"
-                end
               when "N1"
                 if !payer_identification_loop && !payee_identification_loop
                   payer_identification_loop = true
@@ -561,21 +552,6 @@ module Era835Parser
                     payer_identification_loop = false
                     payee_identification_loop = true
                   end
-                end
-              when "REF"
-                case index
-                when 1
-                  # Additional Payee Identification Qualifier
-                  # puts "Additional Payee Identification Qualifier: #{element}"
-                when 2
-                  # Reference Identification Code
-                  # puts "Reference Identification Code: #{element}"
-                when 3
-                  # Additional Payee Identification Qualifier
-                  # puts "Additional Payee Identification Qualifier: #{element}"
-                when 4
-                  # Reference Identification Code
-                  # puts "Reference Identification Code: #{element}"
                 end
               when "PER"
                 case index
@@ -979,6 +955,26 @@ module Era835Parser
                 when 7
                   # Original Units of Service Count
                   # puts "Original Units of Service Count: #{element}"
+                end
+              when "REF"
+                case index
+                when 1
+                  # Additional Payee Identification Qualifier
+                  # puts "Additional Payee Identification Qualifier: #{element}"
+                  returned_reference_number = true if element == '6R'
+                when 2
+                  # Reference Identification Code
+                  # puts "Reference Identification Code: #{element}"
+                  if individual_line_item != {} && svc_counter >= 1 && returned_reference_number && !element.nil?
+                    individual_line_item[:reference_number] = element
+                    returned_reference_number = false
+                  end
+                when 3
+                  # Additional Payee Identification Qualifier
+                  # puts "Additional Payee Identification Qualifier: #{element}"
+                when 4
+                  # Reference Identification Code
+                  # puts "Reference Identification Code: #{element}"
                 end
               end
               era[:checks] = checks
