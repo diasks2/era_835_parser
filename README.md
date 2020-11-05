@@ -66,6 +66,7 @@ if !era[:checks].nil?
             puts line_item[:total_adjustment_amount] # Total adjustment amount (integer)
             puts line_item[:remark_code] # Remark code
             puts line_item[:remarks] # Remarks
+            puts line_item[:reference_number] # Reference number
             if !line_item[:adjustment_groups].nil?
               line_item[:adjustment_groups].each do |adjustment_group_counter, adjustment_group|
                 puts adjustment_group[:adjustment_group] # Adjustment group
