@@ -128,6 +128,9 @@ RSpec.describe Era835Parser::Parser do
               it 'returns the Remarks' do
                 expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:remarks]).to eq(nil)
               end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:reference_number]).to eq(nil)
+              end
               context 'Adjustment group #0' do
                 it 'returns the Adjustment group' do
                   expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:adjustment_groups][0][:adjustment_group]).to eq("Contractual Obligation")
@@ -279,6 +282,9 @@ RSpec.describe Era835Parser::Parser do
               it 'returns the Remarks' do
                 expect(@era[:checks]['02790758'][:eras][0][:line_items][0][:remarks]).to eq(nil)
               end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['02790758'][:eras][0][:line_items][0][:reference_number]).to eq('0001')
+              end
               context 'Adjustment group #0' do
                 it 'returns the Adjustment group' do
                   expect(@era[:checks]['02790758'][:eras][0][:line_items][0][:adjustment_groups][0][:adjustment_group]).to eq("Contractual Obligation")
@@ -336,6 +342,9 @@ RSpec.describe Era835Parser::Parser do
               it 'returns the Remarks' do
                 expect(@era[:checks]['02790758'][:eras][0][:line_items][1][:remarks]).to eq(nil)
               end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['02790758'][:eras][0][:line_items][1][:reference_number]).to eq('0002')
+              end
               context 'Adjustment group #0' do
                 it 'returns the Adjustment group' do
                   expect(@era[:checks]['02790758'][:eras][0][:line_items][1][:adjustment_groups][0][:adjustment_group]).to eq("Patient Responsibility")
@@ -375,6 +384,9 @@ RSpec.describe Era835Parser::Parser do
               end
               it 'returns the Remarks' do
                 expect(@era[:checks]['02790758'][:eras][0][:line_items][2][:remarks]).to eq(nil)
+              end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['02790758'][:eras][0][:line_items][2][:reference_number]).to eq('0003')
               end
             end
           end
@@ -510,6 +522,9 @@ RSpec.describe Era835Parser::Parser do
               it 'returns the Remarks' do
                 expect(@era[:checks]['02790758'][:eras][0][:line_items][0][:remarks]).to eq(nil)
               end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['02790758'][:eras][0][:line_items][0][:reference_number]).to eq('0001')
+              end
               context 'Adjustment group #0' do
                 it 'returns the Adjustment group' do
                   expect(@era[:checks]['02790758'][:eras][0][:line_items][0][:adjustment_groups][0][:adjustment_group]).to eq("Contractual Obligation")
@@ -567,6 +582,9 @@ RSpec.describe Era835Parser::Parser do
               it 'returns the Remarks' do
                 expect(@era[:checks]['02790758'][:eras][0][:line_items][1][:remarks]).to eq(nil)
               end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['02790758'][:eras][0][:line_items][1][:reference_number]).to eq('0002')
+              end
               context 'Adjustment group #0' do
                 it 'returns the Adjustment group' do
                   expect(@era[:checks]['02790758'][:eras][0][:line_items][1][:adjustment_groups][0][:adjustment_group]).to eq("Patient Responsibility")
@@ -606,6 +624,9 @@ RSpec.describe Era835Parser::Parser do
               end
               it 'returns the Remarks' do
                 expect(@era[:checks]['02790758'][:eras][0][:line_items][2][:remarks]).to eq(nil)
+              end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['02790758'][:eras][0][:line_items][2][:reference_number]).to eq('0003')
               end
             end
           end
