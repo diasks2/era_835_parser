@@ -1031,13 +1031,13 @@ module Era835Parser
                   else
                     remark = truncate(line_item[:remarks], 82)
                   end
-                  line_items += "#{" " * (22)}#{line_item[:service_date]} #{line_item[:cpt_code]}#{" " * (7 - get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{" " * (15 - get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{remark}\n\n"
+                  line_items += "#{" " * 22}#{line_item[:service_date]} #{line_item[:cpt_code]}#{safe_spacing(7, get_length(line_item[:cpt_code]))}#{'%.2f' % (line_item[:charge_amount].to_f / 100)}#{safe_spacing(13, get_length('%.2f' % (line_item[:charge_amount].to_f / 100)))}#{'%.2f' % (line_item[:payment_amount].to_f / 100)}#{safe_spacing(13, get_length('%.2f' % (line_item[:payment_amount].to_f / 100)))}#{'%.2f' % (line_item[:total_adjustment_amount].to_f / 100)}#{safe_spacing(15, get_length('%.2f' % (line_item[:total_adjustment_amount].to_f / 100)))}#{remark}\n\n"
 
                   if !line_item[:adjustment_groups].nil?
                     line_item[:adjustment_groups].each do |adjustment_group_counter, adjustment_group|
                       line_items += "                                Adjustment Group            Adj Amt Translated Reason Code\n" if adjustment_group_counter == 0
                       reason_code = adjustment_group[:translated_reason_code].nil? ? '' : adjustment_group[:translated_reason_code].upcase
-                      line_items += "                                #{adjustment_group[:adjustment_group].upcase}#{" " * (28 - get_length(adjustment_group[:adjustment_group]))}#{'%.2f' % (adjustment_group[:adjustment_amount].to_f / 100)}#{" " * (8 - get_length('%.2f' % (adjustment_group[:adjustment_amount].to_f / 100)))}#{truncate(reason_code, 84)}\n"
+                      line_items += "                                #{adjustment_group[:adjustment_group].upcase}#{safe_spacing(28, get_length(adjustment_group[:adjustment_group]))}#{'%.2f' % (adjustment_group[:adjustment_amount].to_f / 100)}#{safe_spacing(8, get_length('%.2f' % (adjustment_group[:adjustment_amount].to_f / 100)))}#{truncate(reason_code, 84)}\n"
                       line_items += "\n" if line_item[:adjustment_groups].length == (adjustment_group_counter + 1)
                     end
                   end
@@ -1045,19 +1045,19 @@ module Era835Parser
               end
               era_text = "--------------------------------------------------------------------------------------------------------------------------------------------------------\n"
               era_text += "Check#                         Patient ID         Last,First          Charge Amt  Payment Amt  Accnt##{" " * [8, get_length(individual_era[:account_number]) - 5].max}Status                         Payer\n"
-              era_text += "#{check[:check_number]}#{" " * (31 - get_length(check[:check_number]))}#{individual_era[:patient_id]}#{" " * (19 - get_length(individual_era[:patient_id]))}#{truncate(individual_era[:patient_name], 18)}#{" " * (20 - get_length(truncate(individual_era[:patient_name], 18)))}#{'%.2f' % (individual_era[:charge_amount].to_f / 100)}#{" " * (12 - get_length('%.2f' % (individual_era[:charge_amount].to_f / 100)))}#{'%.2f' % (individual_era[:payment_amount].to_f / 100)}#{" " * (13 - get_length('%.2f' % (individual_era[:payment_amount].to_f / 100)))}#{individual_era[:account_number]}#{" " * ([14, get_length(individual_era[:account_number]) + 1].max - get_length(individual_era[:account_number]))}#{individual_era[:status]}#{" " * (31 - get_length(individual_era[:status]))}#{check[:payer_name]}\n"
+              era_text += "#{check[:check_number]}#{safe_spacing(31, get_length(check[:check_number]))}#{individual_era[:patient_id]}#{safe_spacing(19, get_length(individual_era[:patient_id]))}#{truncate(individual_era[:patient_name], 18)}#{safe_spacing(20, get_length(truncate(individual_era[:patient_name], 18)))}#{'%.2f' % (individual_era[:charge_amount].to_f / 100)}#{safe_spacing(12, get_length('%.2f' % (individual_era[:charge_amount].to_f / 100)))}#{'%.2f' % (individual_era[:payment_amount].to_f / 100)}#{safe_spacing(13, get_length('%.2f' % (individual_era[:payment_amount].to_f / 100)))}#{individual_era[:account_number]}#{safe_spacing([14, get_length(individual_era[:account_number]) + 1].max, get_length(individual_era[:account_number]))}#{individual_era[:status]}#{safe_spacing(31, get_length(individual_era[:status]))}#{check[:payer_name]}\n"
               era_text += "#{" " * (126 + [14, get_length(individual_era[:account_number]) + 1].max)}#{check[:payer_address]}\n"
               era_text += "#{" " * (126 + [14, get_length(individual_era[:account_number]) + 1].max)}#{check[:payer_city]},#{check[:payer_state]} #{check[:payer_zip_code]}\n"
               era_text += "#{" " * (126 + [14, get_length(individual_era[:account_number]) + 1].max)}Tax ID: #{check[:payer_tax_id]}\n"
 
               if !individual_era[:claim_statement_period_end].nil? && !individual_era[:claim_statement_period_start].nil?
-                era_text += "#{" " * (96)}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n"
-                era_text += "#{" " * (96)}Claim Statement Period: #{individual_era[:claim_statement_period_start]} - #{individual_era[:claim_statement_period_end]}\n\n"
+                era_text += "#{" " * 96}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n"
+                era_text += "#{" " * 96}Claim Statement Period: #{individual_era[:claim_statement_period_start]} - #{individual_era[:claim_statement_period_end]}\n\n"
               else
-                era_text += "#{" " * (96)}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n\n"
+                era_text += "#{" " * 96}Payer Claim Control Number: #{individual_era[:payer_claim_control_number]}\n\n"
               end
               if line_items.length > 0
-                era_text += "#{" " * (10)}Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks\n"
+                era_text += "#{" " * 10}Line Item:  Svc Date   CPT    Charge Amt   Payment Amt  Total Adj Amt  Remarks\n"
                 era_text += line_items
               end
               era[:checks][check[:check_number]][:eras][era_counter][:era_text] = era_text
@@ -1081,6 +1081,15 @@ module Era835Parser
     def truncate(string, truncate_at)
       if !string.nil?
         return string.to_s[0...truncate_at]
+      end
+    end
+
+    def safe_spacing(max, length)
+      value = max - length
+      if value >= 0
+        " " * value
+      else
+        ""
       end
     end
   end
