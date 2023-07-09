@@ -632,6 +632,246 @@ RSpec.describe Era835Parser::Parser do
           end
         end
       end
+
+      context 'example_4.835' do
+        before :all do
+          @era = Era835Parser::Parser.new(file_path: "../era_835_parser/spec/example_4.835").parse
+        end
+
+        context 'Aggregate totals' do
+          it 'returns the addressed to' do
+            expect(@era[:addressed_to]).to eq(nil)
+          end
+          it 'returns the correct number of checks' do
+            expect(@era[:checks].count).to eq(1)
+          end
+          it 'returns the correct number of adjustments' do
+            expect(@era[:adjustments]).to eq(nil)
+          end
+          it 'returns the correct number of eras' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras].count).to eq(1)
+          end
+          it 'returns the correct number of line items' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items].count).to eq(3)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(2)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:adjustment_groups].count).to eq(1)
+          end
+          it 'returns the correct number of adjustment groups' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:adjustment_groups]).to eq(nil)
+          end
+        end
+
+        context 'Check #70408535' do
+          it 'returns the check number' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:check_number]).to eq('0123456789012345678901234567890123456789')
+          end
+          it 'returns the amount' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:amount]).to eq(192286)
+          end
+          it 'returns the number of claims' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:number_of_claims]).to eq(1)
+          end
+          it 'returns the NPI or Tax ID of payee' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:npi_tax_id]).to eq('0987654321')
+          end
+          it 'returns the Check payee' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payee]).to eq('XYZ HEALTHCARE CORPORATION')
+          end
+          it 'returns the Payer name' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_name]).to eq('BLUE CROSS AND BLUE SHIELD OF NORTH CAROLINA')
+          end
+          it 'returns the Payer address' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_address]).to eq('P O BOX 2291')
+          end
+          it 'returns the Payer city' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_city]).to eq('DURHAM')
+          end
+          it 'returns the Payer state' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_state]).to eq('NC')
+          end
+          it 'returns the Payer zip code' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_zip_code]).to eq('27702')
+          end
+          it 'returns the Payer tax id' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_tax_id]).to eq('60-894904')
+          end
+          it 'returns the Check date (string mm/dd/yyyy)' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:date]).to eq('01/08/2011')
+          end
+          context 'ERA #0' do
+            it 'returns the Patient ID' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:patient_id]).to eq('YPB123456789001')
+            end
+            it 'returns the Patient name' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:patient_name]).to eq('DOUGH,MARY')
+            end
+            it 'returns the Patient last name (titlized)' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:patient_last_name]).to eq('Dough')
+            end
+            it 'returns the Patient first name (titlized)' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:patient_first_name]).to eq('Mary')
+            end
+            it 'returns the Total charge amount (integer)' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:charge_amount]).to eq(210000)
+            end
+            it 'returns the Total payment amount (integer)' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:payment_amount]).to eq(192286)
+            end
+            it 'returns the Account number' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:account_number]).to eq('200200964A52')
+            end
+            it 'returns the Cliam status code' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:claim_status_code]).to eq('1')
+            end
+            it 'returns the Claim status code description' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:status]).to eq("PROCESSED AS PRIMARY")
+            end
+            it 'returns the Payer claim control number' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:payer_claim_control_number]).to eq('94151100100')
+            end
+            it 'returns the Claim statement period start' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:claim_statement_period_start]).to eq(nil)
+            end
+            it 'returns the Claim statement period end' do
+              expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:claim_statement_period_end]).to eq(nil)
+            end
+
+            context 'Line item #0' do
+              it 'returns the Date of service (string mm/dd/yyyy)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:service_date]).to eq("12/31/2010")
+              end
+              it 'returns the CPT code' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:cpt_code]).to eq("59430")
+              end
+              it 'returns the Charge amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:charge_amount]).to eq(121000)
+              end
+              it 'returns the Payment amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:payment_amount]).to eq(105786)
+              end
+              it 'returns the Total adjustment amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:total_adjustment_amount]).to eq(15214)
+              end
+              it 'returns the Remark code' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:remark_code]).to eq(nil)
+              end
+              it 'returns the Remarks' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:remarks]).to eq(nil)
+              end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:reference_number]).to eq('0001')
+              end
+              context 'Adjustment group #0' do
+                it 'returns the Adjustment group' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][0][:adjustment_group]).to eq("Contractual Obligation")
+                end
+                it 'returns the Adjustment group code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][0][:adjustment_group_code]).to eq("CO")
+                end
+                it 'returns the Adjustment amount (integer)' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][0][:adjustment_amount]).to eq(3460)
+                end
+                it 'returns the Reason code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][0][:reason_code]).to eq('42')
+                end
+                it 'returns the Translated reason code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][0][:translated_reason_code]).to eq("Charges exceed our fee schedule or maximum allowable amount. (Use CARC 45)")
+                end
+              end
+              context 'Adjustment group #1' do
+                it 'returns the Adjustment group' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][1][:adjustment_group]).to eq("Patient Responsibility")
+                end
+                it 'returns the Adjustment group code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][1][:adjustment_group_code]).to eq("PR")
+                end
+                it 'returns the Adjustment amount (integer)' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][1][:adjustment_amount]).to eq(11754)
+                end
+                it 'returns the Reason code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][1][:reason_code]).to eq('2')
+                end
+                it 'returns the Translated reason code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][0][:adjustment_groups][1][:translated_reason_code]).to eq("Coinsurance Amount")
+                end
+              end
+            end
+            context 'Line item #1' do
+              it 'returns the Date of service (string mm/dd/yyyy)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:service_date]).to eq("12/31/2010")
+              end
+              it 'returns the CPT code' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:cpt_code]).to eq("59440")
+              end
+              it 'returns the Charge amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:charge_amount]).to eq(89000)
+              end
+              it 'returns the Payment amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:payment_amount]).to eq(86500)
+              end
+              it 'returns the Total adjustment amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:total_adjustment_amount]).to eq(2500)
+              end
+              it 'returns the Remark code' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:remark_code]).to eq(nil)
+              end
+              it 'returns the Remarks' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:remarks]).to eq(nil)
+              end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:reference_number]).to eq('0002')
+              end
+              context 'Adjustment group #0' do
+                it 'returns the Adjustment group' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:adjustment_groups][0][:adjustment_group]).to eq("Patient Responsibility")
+                end
+                it 'returns the Adjustment group code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:adjustment_groups][0][:adjustment_group_code]).to eq("PR")
+                end
+                it 'returns the Adjustment amount (integer)' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:adjustment_groups][0][:adjustment_amount]).to eq(2500)
+                end
+                it 'returns the Reason code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:adjustment_groups][0][:reason_code]).to eq('3')
+                end
+                it 'returns the Translated reason code' do
+                  expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][1][:adjustment_groups][0][:translated_reason_code]).to eq("Co-payment Amount")
+                end
+              end
+            end
+            context 'Line item #2' do
+              it 'returns the Date of service (string mm/dd/yyyy)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:service_date]).to eq("12/31/2010")
+              end
+              it 'returns the CPT code' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:cpt_code]).to eq("59426")
+              end
+              it 'returns the Charge amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:charge_amount]).to eq(74200)
+              end
+              it 'returns the Payment amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:payment_amount]).to eq(74200)
+              end
+              it 'returns the Total adjustment amount (integer)' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:total_adjustment_amount]).to eq(nil)
+              end
+              it 'returns the Remark code' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:remark_code]).to eq(nil)
+              end
+              it 'returns the Remarks' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:remarks]).to eq(nil)
+              end
+              it 'returns the Reference number' do
+                expect(@era[:checks]['0123456789012345678901234567890123456789'][:eras][0][:line_items][2][:reference_number]).to eq('0003')
+              end
+            end
+          end
+        end
+      end
     end
 
     context 'Human readable' do
