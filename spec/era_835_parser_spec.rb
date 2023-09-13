@@ -65,6 +65,9 @@ RSpec.describe Era835Parser::Parser do
           it 'returns the Payer tax id' do
             expect(@era[:checks]['70408535'][:payer_tax_id]).to eq('57-14001')
           end
+          it 'returns the Payer EDI id' do
+            expect(@era[:checks]['70408535'][:payer_edi_id]).to eq('11111')
+          end
           it 'returns the Check date (string mm/dd/yyyy)' do
             expect(@era[:checks]['70408535'][:date]).to eq('09/23/2010')
           end
@@ -185,7 +188,7 @@ RSpec.describe Era835Parser::Parser do
           end
         end
 
-        context 'Check #70408535' do
+        context 'Check #02790758' do
           it 'returns the check number' do
             expect(@era[:checks]['02790758'][:check_number]).to eq('02790758')
           end
@@ -218,6 +221,9 @@ RSpec.describe Era835Parser::Parser do
           end
           it 'returns the Payer tax id' do
             expect(@era[:checks]['02790758'][:payer_tax_id]).to eq('60-894904')
+          end
+          it 'returns the Payer EDI id' do
+            expect(@era[:checks]['02790758'][:payer_edi_id]).to eq('22222')
           end
           it 'returns the Check date (string mm/dd/yyyy)' do
             expect(@era[:checks]['02790758'][:date]).to eq('01/08/2011')
@@ -425,7 +431,7 @@ RSpec.describe Era835Parser::Parser do
           end
         end
 
-        context 'Check #70408535' do
+        context 'Check #02790758' do
           it 'returns the check number' do
             expect(@era[:checks]['02790758'][:check_number]).to eq('02790758')
           end
@@ -458,6 +464,9 @@ RSpec.describe Era835Parser::Parser do
           end
           it 'returns the Payer tax id' do
             expect(@era[:checks]['02790758'][:payer_tax_id]).to eq('60-894904')
+          end
+          it 'returns the Payer EDI id' do
+            expect(@era[:checks]['02790758'][:payer_edi_id]).to eq('33333')
           end
           it 'returns the Check date (string mm/dd/yyyy)' do
             expect(@era[:checks]['02790758'][:date]).to eq('01/08/2011')
@@ -698,6 +707,9 @@ RSpec.describe Era835Parser::Parser do
           end
           it 'returns the Payer tax id' do
             expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_tax_id]).to eq('60-894904')
+          end
+          it 'returns the Payer EDI id' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payer_edi_id]).to eq(nil)
           end
           it 'returns the Check date (string mm/dd/yyyy)' do
             expect(@era[:checks]['0123456789012345678901234567890123456789'][:date]).to eq('01/08/2011')
