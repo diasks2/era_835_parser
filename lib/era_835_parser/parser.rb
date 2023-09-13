@@ -67,6 +67,7 @@ module Era835Parser
       service_date = false
       floating_adjustment_group_code = nil
       returned_reference_number = false
+      payer_edi_id = false
 
       file_or_file_path = !file.nil? ? file : file_path
       opened_file = file_or_file_path.respond_to?(:write) ? file_or_file_path : open(file_or_file_path)
@@ -962,12 +963,18 @@ module Era835Parser
                   # Additional Payee Identification Qualifier
                   # puts "Additional Payee Identification Qualifier: #{element}"
                   returned_reference_number = true if element == '6R'
+                  payer_edi_id = true if element == '2U'
                 when 2
                   # Reference Identification Code
                   # puts "Reference Identification Code: #{element}"
                   if individual_line_item != {} && svc_counter >= 1 && returned_reference_number && !element.nil?
                     individual_line_item[:reference_number] = element
                     returned_reference_number = false
+                  end
+
+                  if payer_edi_id
+                    era[:checks][check[:check_number]][:payer_edi_id] = element
+                    payer_edi_id = false
                   end
                 when 3
                   # Additional Payee Identification Qualifier
