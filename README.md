@@ -121,6 +121,11 @@ era = Era835Parser::Parser.new(file: string_io).parse
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+## Publishing
+
+1. gem build era_835_parser.gemspec
+2. gem push era_835_parser-x.x.x.gem
+
 ## License
 
 The MIT License (MIT)
