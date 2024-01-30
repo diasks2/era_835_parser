@@ -38,6 +38,7 @@ if !era[:checks].nil?
     puts check[:payer_state] # Payer state
     puts check[:payer_zip_code] # Payer zip code
     puts check[:payer_tax_id] # Payer tax id
+    puts check[:payer_edi_id] # Payer EDI id
     puts check[:date] # Check date (string mm/dd/yyyy)
     if !check[:eras].nil?
       check[:eras].each do |era_counter, individual_era|
