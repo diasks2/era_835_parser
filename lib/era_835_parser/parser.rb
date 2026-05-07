@@ -62,6 +62,7 @@ module Era835Parser
       service_payment_information_loop = false
       bpr_amount = ''
       bpr_date = ''
+      transaction_handling_code = ''
       receive_date = false
       claim_date_start = false
       claim_date_end = false
@@ -361,6 +362,7 @@ module Era835Parser
                 when 1
                   # Transaction Handling Code
                   # puts "Transaction Handling Code: #{element}"
+                  transaction_handling_code = element.strip
                 when 2
                   # Monetary Amount
                   # puts "Monetary Amount: #{element}"
@@ -447,10 +449,12 @@ module Era835Parser
                   check = Hash.new
                   check[:check_number] = element.strip
                   check[:amount] = (bpr_amount.to_f * 100).round().to_i
-                  bpr_amount = ''
                   check[:date] = bpr_date
-                  bpr_date = ''
+                  check[:transaction_handling_code] = transaction_handling_code
                   checks[check[:check_number]] = check
+                  bpr_amount = ''
+                  bpr_date = ''
+                  transaction_handling_code = ''
                 when 3
                   # ORIGINATING COMPANY IDENTIFIER
                   # puts "ORIGINATING COMPANY IDENTIFIER: #{element}"
@@ -1034,7 +1038,7 @@ module Era835Parser
           eras[era_counter] = individual_era
           era[:checks][check_number][:eras] = era[:checks][check_number][:eras].merge(eras)
         end
-        return era
+        era
       else
         if individual_line_item != {}
           if line_items.nil?
@@ -1100,7 +1104,7 @@ module Era835Parser
             end
           end
         end
-        return era
+        era
       end
     end
 
@@ -1108,15 +1112,15 @@ module Era835Parser
 
     def get_length(string)
       if string.nil?
-        return 0
+        0
       else
-        return string.length
+        string.length
       end
     end
 
     def truncate(string, truncate_at)
       if !string.nil?
-        return string.to_s[0...truncate_at]
+        string.to_s[0...truncate_at]
       end
     end
 
