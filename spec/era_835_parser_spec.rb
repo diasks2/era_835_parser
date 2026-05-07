@@ -38,6 +38,12 @@ RSpec.describe Era835Parser::Parser do
           it 'returns the transaction handling code' do
             expect(@era[:checks]['70408535'][:transaction_handling_code]).to eq('I')
           end
+          it 'returns the credit debit flag' do
+            expect(@era[:checks]['70408535'][:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@era[:checks]['70408535'][:payment_method_code]).to eq('CHK')
+          end
           it 'returns the amount' do
             expect(@era[:checks]['70408535'][:amount]).to eq(1509646)
           end
@@ -197,6 +203,12 @@ RSpec.describe Era835Parser::Parser do
           end
           it 'returns the transaction handling code' do
             expect(@era[:checks]['02790758'][:transaction_handling_code]).to eq('I')
+          end
+          it 'returns the credit debit flag' do
+            expect(@era[:checks]['02790758'][:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@era[:checks]['02790758'][:payment_method_code]).to eq('CHK')
           end
           it 'returns the amount' do
             expect(@era[:checks]['02790758'][:amount]).to eq(192286)
@@ -444,6 +456,12 @@ RSpec.describe Era835Parser::Parser do
           it 'returns the transaction handling code' do
             expect(@era[:checks]['02790758'][:transaction_handling_code]).to eq('I')
           end
+          it 'returns the credit debit flag' do
+            expect(@era[:checks]['02790758'][:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@era[:checks]['02790758'][:payment_method_code]).to eq('CHK')
+          end
           it 'returns the amount' do
             expect(@era[:checks]['02790758'][:amount]).to eq(192286)
           end
@@ -690,6 +708,12 @@ RSpec.describe Era835Parser::Parser do
           it 'returns the transaction handling code' do
             expect(@era[:checks]['0123456789012345678901234567890123456789'][:transaction_handling_code]).to eq('I')
           end
+          it 'returns the credit debit flag' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payment_method_code]).to eq('CHK')
+          end
           it 'returns the amount' do
             expect(@era[:checks]['0123456789012345678901234567890123456789'][:amount]).to eq(192286)
           end
@@ -935,6 +959,12 @@ RSpec.describe Era835Parser::Parser do
           end
           it 'returns the transaction handling code' do
             expect(@era[:checks]['0123456789012345678901234567890123456789'][:transaction_handling_code]).to eq('I')
+          end
+          it 'returns the credit debit flag' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@era[:checks]['0123456789012345678901234567890123456789'][:payment_method_code]).to eq('CHK')
           end
           it 'returns the amount' do
             expect(@era[:checks]['0123456789012345678901234567890123456789'][:amount]).to eq(192286)
@@ -1215,6 +1245,12 @@ RSpec.describe Era835Parser::Parser do
           it 'returns the transaction handling code' do
             expect(@check_5003[:transaction_handling_code]).to eq('H')
           end
+          it 'returns the credit debit flag' do
+            expect(@check_5003[:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@check_5003[:payment_method_code]).to eq('NON')
+          end
           it 'returns the amount' do
             expect(@check_5003[:amount]).to eq(0)
           end
@@ -1454,6 +1490,12 @@ RSpec.describe Era835Parser::Parser do
           end
           it 'returns the transaction handling code' do
             expect(@check_5010[:transaction_handling_code]).to eq('I')
+          end
+          it 'returns the credit debit flag' do
+            expect(@check_5010[:credit_debit_flag]).to eq('C')
+          end
+          it 'returns the payment method code' do
+            expect(@check_5010[:payment_method_code]).to eq('ACH')
           end
           it 'returns the amount' do
             expect(@check_5010[:amount]).to eq(30000)
