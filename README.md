@@ -28,6 +28,9 @@ puts era[:addressed_to] # The person/name the ERA is addressed to
 if !era[:checks].nil?
   era[:checks].each do |check_number, check|
     puts check[:check_number] # Check number
+    puts check[:transaction_handling_code] # Transaction handling code
+    puts check[:credit_debit_flag] # Credit/debit flag
+    puts check[:payment_method_code] # Payment method code
     puts check[:amount] # Check amount
     puts check[:number_of_claims] # Number of claims this check covers (integer)
     puts check[:npi_tax_id] # NPI or Tax ID of payee
