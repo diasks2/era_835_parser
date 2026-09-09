@@ -29,6 +29,9 @@ RSpec.describe Era835Parser::Parser do
           it 'returns the correct number of adjustment groups' do
             expect(@era[:checks]['70408535'][:eras][0][:line_items][0][:adjustment_groups].count).to eq(1)
           end
+          it 'returns no provider adjustments' do
+            expect(@era[:checks]['70408535'][:provider_adjustments]).to eq(nil)
+          end
         end
 
         context 'Check #70408535' do
@@ -1727,6 +1730,84 @@ RSpec.describe Era835Parser::Parser do
                 expect(@check_5010[:eras][0][:line_items][2][:reference_number]).to eq('0003')
               end
             end
+          end
+        end
+      end
+
+      context 'example_7.835' do
+        # Multi-check 835 where PLB segments carry multiple reason/amount pairs
+        # (PLB03-04 through PLB13-14). Each pair must parse as its own
+        # adjustment and be attributed to the check (TRN) it belongs to.
+        before :all do
+          @era = Era835Parser::Parser.new(file_path: "../era_835_parser/spec/example_7.835").parse
+        end
+
+        context 'Aggregate totals' do
+          it 'returns the correct number of checks' do
+            expect(@era[:checks].count).to eq(2)
+          end
+          it 'returns one adjustment per reason/amount pair across the file' do
+            expect(@era[:adjustments].count).to eq(5)
+          end
+        end
+
+        context 'Check #02790758 (zero payment, multi-pair PLB)' do
+          it 'returns the transaction handling code' do
+            expect(@era[:checks]['02790758'][:transaction_handling_code]).to eq('H')
+          end
+          it 'returns the check amount (integer)' do
+            expect(@era[:checks]['02790758'][:amount]).to eq(0)
+          end
+          it 'returns one provider adjustment per reason/amount pair' do
+            expect(@era[:checks]['02790758'][:provider_adjustments].count).to eq(4)
+          end
+          it 'returns the first pair' do
+            adjustment = @era[:checks]['02790758'][:provider_adjustments][0]
+            expect(adjustment[:reason_code]).to eq('FB')
+            expect(adjustment[:reason]).to eq('Forwarding Balance')
+            expect(adjustment[:reference_id]).to eq('926072000117048')
+            expect(adjustment[:adjustment_amount]).to eq(547904)
+            expect(adjustment[:provider_id]).to eq('0987654321')
+            expect(adjustment[:adjustment_date]).to eq('03/14/2026')
+          end
+          it 'returns the second pair' do
+            adjustment = @era[:checks]['02790758'][:provider_adjustments][1]
+            expect(adjustment[:reason_code]).to eq('FB')
+            expect(adjustment[:reference_id]).to eq('926073000032814')
+            expect(adjustment[:adjustment_amount]).to eq(-375852)
+          end
+          it 'returns the third pair' do
+            adjustment = @era[:checks]['02790758'][:provider_adjustments][2]
+            expect(adjustment[:reason_code]).to eq('WO')
+            expect(adjustment[:reason]).to eq('Overpayment Recovery')
+            expect(adjustment[:reference_id]).to eq('200200964A52')
+            expect(adjustment[:adjustment_amount]).to eq(11576)
+          end
+          it 'returns the fourth pair' do
+            adjustment = @era[:checks]['02790758'][:provider_adjustments][3]
+            expect(adjustment[:reason_code]).to eq('CS')
+            expect(adjustment[:reason]).to eq('Adjustment')
+            expect(adjustment[:reference_id]).to eq('200200964A52')
+            expect(adjustment[:adjustment_amount]).to eq(-11576)
+          end
+        end
+
+        context 'Check #99887766 (single-pair PLB)' do
+          it 'returns the transaction handling code' do
+            expect(@era[:checks]['99887766'][:transaction_handling_code]).to eq('I')
+          end
+          it 'returns the check amount (integer)' do
+            expect(@era[:checks]['99887766'][:amount]).to eq(10000)
+          end
+          it 'returns one provider adjustment' do
+            expect(@era[:checks]['99887766'][:provider_adjustments].count).to eq(1)
+          end
+          it 'returns the pair' do
+            adjustment = @era[:checks]['99887766'][:provider_adjustments][0]
+            expect(adjustment[:reason_code]).to eq('WO')
+            expect(adjustment[:reason]).to eq('Overpayment Recovery')
+            expect(adjustment[:reference_id]).to eq('926074000055521')
+            expect(adjustment[:adjustment_amount]).to eq(2500)
           end
         end
       end

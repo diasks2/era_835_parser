@@ -35,6 +35,11 @@ module Era835Parser
       adjustment_counter_a = -1
       svc_counter = 0
 
+      # PLB (provider level adjustment) segment state
+      plb_provider_id = ''
+      plb_adjustment_date = ''
+      plb_pair_open = false
+
       # trigger variables
       adjustments_start = false
       checks_start = false
@@ -677,121 +682,49 @@ module Era835Parser
                 case index
                 when 1
                   # Provider Identifier
-                  adjustment_counter_a += 1
-                  adjustment = Hash.new
-                  adjustment[:provider_id] = element.strip
+                  plb_provider_id = element.strip
+                  plb_pair_open = false
                 when 2
                   # Fiscal Period Date
-                  adjustment[:adjustment_date] = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
-                when 3
-                  element.split(":").each_with_index do |subelement, i|
-                    case i
-                    when 0
-                      # PROVIDER ADJUSTMENT REASON CODE
-                      # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
-                      adjustment[:reason_code] = subelement.strip
-                      adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
-                    when 1
-                      # Provider Adjustment Identifier
-                      # puts "Provider Adjustment Identifier: #{subelement}"
-                      adjustment[:reference_id] = subelement.strip
+                  plb_adjustment_date = element.strip[4..5] + "/" + element.strip[6..7] + "/" + element.strip[0..3]
+                when 3, 5, 7, 9, 11, 13
+                  # Start of an adjustment reason/amount pair (PLB03-04 through PLB13-14).
+                  # A single PLB segment carries up to 6 pairs; each pair is its own adjustment.
+                  if element.strip.empty?
+                    plb_pair_open = false
+                  else
+                    plb_pair_open = true
+                    adjustment_counter_a += 1
+                    adjustment = Hash.new
+                    adjustment[:provider_id] = plb_provider_id
+                    adjustment[:adjustment_date] = plb_adjustment_date
+                    element.split(":").each_with_index do |subelement, i|
+                      case i
+                      when 0
+                        # PROVIDER ADJUSTMENT REASON CODE
+                        # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
+                        adjustment[:reason_code] = subelement.strip
+                        adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
+                      when 1
+                        # Provider Adjustment Identifier
+                        # puts "Provider Adjustment Identifier: #{subelement}"
+                        adjustment[:reference_id] = subelement.strip
+                      end
                     end
                   end
-                when 4
+                when 4, 6, 8, 10, 12, 14
                   # Provider Adjustment Amount
-                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
-                when 5
-                  adjustment_counter_a += 1
-                  element.split(":").each_with_index do |subelement, i|
-                    case i
-                    when 0
-                      # PROVIDER ADJUSTMENT REASON CODE
-                      # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
-                      adjustment[:reason_code] = subelement.strip
-                      adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
-                    when 1
-                      # Provider Adjustment Identifier
-                      # puts "Provider Adjustment Identifier: #{subelement}"
-                      adjustment[:reference_id] = subelement.strip
-                    end
-                  end
-                when 6
-                  # Provider Adjustment Amount
-                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
-                when 7
-                  adjustment_counter_a += 1
-                  element.split(":").each_with_index do |subelement, i|
-                    case i
-                    when 0
-                      # PROVIDER ADJUSTMENT REASON CODE
-                      # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
-                      adjustment[:reason_code] = subelement.strip
-                      adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
-                    when 1
-                      # Provider Adjustment Identifier
-                      # puts "Provider Adjustment Identifier: #{subelement}"
-                      adjustment[:reference_id] = subelement.strip
-                    end
-                  end
-                when 8
-                  # Provider Adjustment Amount
-                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
-                when 9
-                  adjustment_counter_a += 1
-                  element.split(":").each_with_index do |subelement, i|
-                    case i
-                    when 0
-                      # PROVIDER ADJUSTMENT REASON CODE
-                      # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
-                      adjustment[:reason_code] = subelement.strip
-                      adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
-                    when 1
-                      # Provider Adjustment Identifier
-                      # puts "Provider Adjustment Identifier: #{subelement}"
-                      adjustment[:reference_id] = subelement.strip
-                    end
-                  end
-                when 10
-                  # Provider Adjustment Amount
-                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
-                when 11
-                  adjustment_counter_a += 1
-                  element.split(":").each_with_index do |subelement, i|
-                    case i
-                    when 0
-                      # PROVIDER ADJUSTMENT REASON CODE
-                      # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
-                      adjustment[:reason_code] = subelement.strip
-                      adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
-                    when 1
-                      # Provider Adjustment Identifier
-                      # puts "Provider Adjustment Identifier: #{subelement}"
-                      adjustment[:reference_id] = subelement.strip
-                    end
-                  end
-                when 12
-                  # Provider Adjustment Amount
-                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
-                when 13
-                  adjustment_counter_a += 1
-                  element.split(":").each_with_index do |subelement, i|
-                    case i
-                    when 0
-                      # PROVIDER ADJUSTMENT REASON CODE
-                      # puts "PROVIDER ADJUSTMENT REASON CODE: #{subelement}"
-                      adjustment[:reason_code] = subelement.strip
-                      adjustment[:reason] = PROVIDER_LEVEL_ADJUSTMENTS[subelement.strip]
-                    when 1
-                      # Provider Adjustment Identifier
-                      # puts "Provider Adjustment Identifier: #{subelement}"
-                      adjustment[:reference_id] = subelement.strip
-                    end
-                  end
-                when 14
-                  # Provider Adjustment Amount
-                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i
+                  adjustment[:adjustment_amount] = (element.to_f * 100).round().to_i if plb_pair_open
                 end
-                adjustments[adjustment_counter_a] = adjustment if adjustment_counter_a > -1 && (adjustment != {} && !adjustment.nil?)
+                if plb_pair_open && adjustment_counter_a > -1 && (adjustment != {} && !adjustment.nil?)
+                  adjustments[adjustment_counter_a] = adjustment
+                  # Attribute the adjustment to the check (TRN) it belongs to, so multi-check
+                  # files expose provider level adjustments per check.
+                  if check[:check_number]
+                    check[:provider_adjustments] = Array.new if check[:provider_adjustments].nil?
+                    check[:provider_adjustments] << adjustment unless check[:provider_adjustments].include?(adjustment)
+                  end
+                end
               when "CAS"
                 case index
                 when 1
