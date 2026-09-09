@@ -43,6 +43,17 @@ if !era[:checks].nil?
     puts check[:payer_tax_id] # Payer tax id
     puts check[:payer_edi_id] # Payer EDI id
     puts check[:date] # Check date (string mm/dd/yyyy)
+    # Provider level adjustments (PLB) attributed to this check
+    if !check[:provider_adjustments].nil?
+      check[:provider_adjustments].each do |adjustment|
+        puts adjustment[:adjustment_date] # Adjustment date (string mm/dd/yyyy)
+        puts adjustment[:provider_id] # Provider ID
+        puts adjustment[:reference_id] # Reference ID
+        puts adjustment[:adjustment_amount] # Adjustment amount (integer)
+        puts adjustment[:reason] # Reason
+        puts adjustment[:reason_code] # Reason code
+      end
+    end
     if !check[:eras].nil?
       check[:eras].each do |era_counter, individual_era|
         puts individual_era[:era_text] # ERA text
