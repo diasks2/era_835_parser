@@ -83,7 +83,13 @@ if !era[:checks].nil?
         if !individual_era[:line_items].nil?
           individual_era[:line_items].each do |line_item_counter, line_item|
             puts line_item[:service_date] # Date of service (string mm/dd/yyyy)
-            puts line_item[:cpt_code] # CPT code
+            puts line_item[:procedure_qualifier] # Product/service ID qualifier (e.g. HC, NU)
+            puts line_item[:cpt_code] # CPT/HCPCS code (only when the qualifier is HC, HP, ER, IV or WK)
+            puts line_item[:revenue_code] # NUBC revenue code (SVC04, or the code itself when the qualifier is NU)
+            puts line_item[:modifiers] # Procedure modifiers (array of strings, empty when none)
+            puts line_item[:units_paid] # Units of service paid (integer, or float when fractional)
+            puts line_item[:original_procedure_code] # Submitted procedure code, when the payer adjudicated a different one
+            puts line_item[:original_units] # Submitted units of service, when different from the units paid
             puts line_item[:charge_amount] # Charge amount (integer)
             puts line_item[:payment_amount] # Payment amount (integer)
             puts line_item[:total_adjustment_amount] # Total adjustment amount (integer)
