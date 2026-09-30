@@ -1811,6 +1811,146 @@ RSpec.describe Era835Parser::Parser do
           end
         end
       end
+
+      context 'example_8.835' do
+        # Institutional (837I) remittance. Claim 1 reports its line as a procedure
+        # code with modifiers and paid units, and no revenue code or line reference.
+        # Claim 2 reports a revenue code alone (SVC01 qualified NU), a procedure code
+        # with the revenue code in SVC04, and an adjudicated code and units that
+        # differ from the submitted ones (SVC06, SVC07). Claim 3 covers the qualifier
+        # rules: SVC04 over an NU code, fractional units, drug and HIPPS codes.
+        before :all do
+          @era = Era835Parser::Parser.new(file_path: "../era_835_parser/spec/example_8.835").parse
+          @claims = @era[:checks]['55443322'][:eras]
+        end
+
+        context 'Aggregate totals' do
+          it 'returns one check with three claims' do
+            expect(@era[:checks].count).to eq(1)
+            expect(@claims.count).to eq(3)
+          end
+          it 'returns the line items of each claim' do
+            expect(@claims[0][:line_items].count).to eq(1)
+            expect(@claims[1][:line_items].count).to eq(3)
+            expect(@claims[2][:line_items].count).to eq(3)
+          end
+        end
+
+        context 'Claim #0 (procedure code with modifiers and paid units)' do
+          it 'returns the procedure code and its qualifier' do
+            line_item = @claims[0][:line_items][0]
+            expect(line_item[:procedure_qualifier]).to eq('HC')
+            expect(line_item[:cpt_code]).to eq('97530')
+          end
+          it 'returns the modifiers in the order sent' do
+            expect(@claims[0][:line_items][0][:modifiers]).to eq(['59', 'GO', 'UB'])
+          end
+          it 'returns the paid units (integer)' do
+            expect(@claims[0][:line_items][0][:units_paid]).to eq(4)
+          end
+          it 'returns no revenue code, submitted code, submitted units or line reference' do
+            line_item = @claims[0][:line_items][0]
+            expect(line_item[:revenue_code]).to eq(nil)
+            expect(line_item[:original_procedure_code]).to eq(nil)
+            expect(line_item[:original_units]).to eq(nil)
+            expect(line_item[:reference_number]).to eq(nil)
+          end
+          it 'returns the amounts (integer) and the service date' do
+            line_item = @claims[0][:line_items][0]
+            expect(line_item[:charge_amount]).to eq(20000)
+            expect(line_item[:payment_amount]).to eq(9600)
+            expect(line_item[:total_adjustment_amount]).to eq(10400)
+            expect(line_item[:service_date]).to eq('09/01/2026')
+          end
+        end
+
+        context 'Claim #1 (revenue code lines)' do
+          it 'returns the revenue code of an NU line, and no CPT code' do
+            line_item = @claims[1][:line_items][0]
+            expect(line_item[:procedure_qualifier]).to eq('NU')
+            expect(line_item[:revenue_code]).to eq('0441')
+            expect(line_item[:cpt_code]).to eq(nil)
+            expect(line_item[:modifiers]).to eq([])
+            expect(line_item[:units_paid]).to eq(1)
+            expect(line_item[:reference_number]).to eq('A1B2C3-1')
+          end
+          it 'returns the CPT code, the modifiers and the SVC04 revenue code of an HC line' do
+            line_item = @claims[1][:line_items][1]
+            expect(line_item[:procedure_qualifier]).to eq('HC')
+            expect(line_item[:cpt_code]).to eq('92507')
+            expect(line_item[:modifiers]).to eq(['GN', 'UB'])
+            expect(line_item[:revenue_code]).to eq('0441')
+            expect(line_item[:units_paid]).to eq(1)
+            expect(line_item[:reference_number]).to eq('A1B2C3-2')
+          end
+          it 'returns four modifiers, and the submitted code and units when the payer adjudicated others' do
+            line_item = @claims[1][:line_items][2]
+            expect(line_item[:cpt_code]).to eq('97530')
+            expect(line_item[:modifiers]).to eq(['GP', '59', 'UB', 'KX'])
+            expect(line_item[:revenue_code]).to eq('0431')
+            expect(line_item[:units_paid]).to eq(2)
+            expect(line_item[:original_procedure_code]).to eq('97110')
+            expect(line_item[:original_units]).to eq(3)
+            expect(line_item[:reference_number]).to eq('A1B2C3-3')
+          end
+          it 'returns the amounts and the service date of every line' do
+            line_items = @claims[1][:line_items].values
+            expect(line_items.map { |line_item| line_item[:charge_amount] }).to eq([15000, 15000, 15000])
+            expect(line_items.map { |line_item| line_item[:payment_amount] }).to eq([12000, 10000, 10000])
+            expect(line_items.map { |line_item| line_item[:total_adjustment_amount] }).to eq([3000, 5000, 5000])
+            expect(line_items.map { |line_item| line_item[:service_date] }).to eq(['09/02/2026'] * 3)
+          end
+          it 'prints the CPT code in the ERA text, or the revenue code when a line has none' do
+            expect(@claims[1][:era_text]).to include('09/02/2026 0441   150.00')
+            expect(@claims[1][:era_text]).to include('09/02/2026 92507  150.00')
+          end
+        end
+
+        context 'Claim #2 (qualifier rules)' do
+          it 'returns the SVC04 revenue code over the one in an NU SVC01' do
+            expect(@claims[2][:line_items][0][:revenue_code]).to eq('0424')
+            expect(@claims[2][:line_items][0][:cpt_code]).to eq(nil)
+          end
+          it 'returns fractional paid units as a float' do
+            expect(@claims[2][:line_items][0][:units_paid]).to eq(1.5)
+          end
+          it 'returns no CPT code or revenue code for a drug code (N4)' do
+            line_item = @claims[2][:line_items][1]
+            expect(line_item[:procedure_qualifier]).to eq('N4')
+            expect(line_item[:cpt_code]).to eq(nil)
+            expect(line_item[:revenue_code]).to eq(nil)
+          end
+          it 'returns the CPT code for a HIPPS code (HP)' do
+            line_item = @claims[2][:line_items][2]
+            expect(line_item[:procedure_qualifier]).to eq('HP')
+            expect(line_item[:cpt_code]).to eq('1AAA1')
+          end
+        end
+      end
+
+      context 'example_3.835 service line fields' do
+        # The fields added for institutional remittances, on a professional remit
+        # whose lines carry the paid units (SVC05) and, on two lines, the submitted
+        # procedure code (SVC06).
+        before :all do
+          @era = Era835Parser::Parser.new(file_path: "../era_835_parser/spec/example_3.835").parse
+          @line_items = @era[:checks]['02790758'][:eras][0][:line_items]
+        end
+
+        it 'returns the qualifier, no modifiers and no revenue code' do
+          expect(@line_items[0][:procedure_qualifier]).to eq('HC')
+          expect(@line_items[0][:modifiers]).to eq([])
+          expect(@line_items[0][:revenue_code]).to eq(nil)
+        end
+        it 'returns the paid units (integer)' do
+          expect(@line_items.values.map { |line_item| line_item[:units_paid] }).to eq([1, 1, 1])
+        end
+        it 'returns the submitted procedure code from SVC06' do
+          expect(@line_items[0][:original_procedure_code]).to eq('59410')
+          expect(@line_items[1][:original_procedure_code]).to eq('59410')
+          expect(@line_items[2][:original_procedure_code]).to eq(nil)
+        end
+      end
     end
 
     context 'Human readable' do
