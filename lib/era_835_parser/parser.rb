@@ -85,7 +85,9 @@ module Era835Parser
       file_or_file_path = !file.nil? ? file : file_path
       opened_file = file_or_file_path.respond_to?(:write) ? file_or_file_path : open(file_or_file_path)
       opened_file.readlines.each do |line|
-        if line.include?("ISA")
+        # An ISA segment header (ISA followed by its element separator), not "ISA"
+        # inside a word such as LISA or DISABILITY in a human readable ERA
+        if line =~ /\bISA[^\w\s]/
           file_type = "machine_readable"
         elsif line.include?("Dear:")
           file_type = "human_readable"
