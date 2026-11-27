@@ -2729,6 +2729,22 @@ Check#                         Patient ID         Last,First          Charge Amt
       end
     end
 
+    context 'Human readable with "ISA" inside a word' do
+      before :all do
+        file_string = File.open("../era_835_parser/spec/test_era.txt").read.sub("DOE JR,DAVIS ", "DOE JR,LISA  ")
+        @era = Era835Parser::Parser.new(file: StringIO.new(file_string)).parse
+      end
+
+      it 'still parses every claim' do
+        expect(@era[:checks]['201812215555555555'][:eras].count).to eq(1)
+        expect(@era[:checks]['201812215555555556'][:eras].count).to eq(2)
+        expect(@era[:checks]['201812215555555557'][:eras].count).to eq(2)
+      end
+      it 'returns the patient name' do
+        expect(@era[:checks]['201812215555555555'][:eras][0][:patient_name]).to eq('DOE JR,LISA')
+      end
+    end
+
     context 'StringIO' do
       context 'Machine readable' do
         context 'example_1.835' do
